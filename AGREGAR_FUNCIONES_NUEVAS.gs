@@ -148,27 +148,47 @@ function agregarColumnaSiNoSoloNueva() {
     const cols = hoja.getLastColumn();
     const encs = hoja.getRange(1, 1, 1, cols).getValues()[0];
 
-    // Verificar si ya existe en columna K
-    if (cols >= COLUMNA_K) {
-      const valorK = hoja.getRange(1, COLUMNA_K).getValue();
-      if (valorK && valorK.toString().toLowerCase().includes('no terminó') && valorK.toString().toLowerCase().includes('sí')) {
-        return; // Ya existe
+    // PASO 1: Buscar y ELIMINAR columna vieja "No terminó la formación" (sin Sí/No)
+    for (let i = 0; i < encs.length; i++) {
+      const encabezado = encs[i] ? encs[i].toString().toLowerCase() : '';
+      // Si encuentra "no terminó" pero NO tiene "sí/no", es la vieja - ELIMINARLA
+      if (encabezado.includes('no terminó') &&
+          encabezado.includes('formación') &&
+          !encabezado.includes('sí') &&
+          !encabezado.includes('no)')) {
+        hoja.deleteColumn(i + 1);
+        SpreadsheetApp.flush(); // Aplicar cambios
+        break; // Solo eliminar la primera que encuentre
       }
     }
 
-    // Insertar columna en posición K (después de la columna J)
-    if (cols < COLUMNA_K) {
-      // Si hay menos columnas, agregar hasta llegar a K
+    // Refrescar datos después de eliminar
+    const colsActual = hoja.getLastColumn();
+    const encsActual = hoja.getRange(1, 1, 1, colsActual).getValues()[0];
+
+    // PASO 2: Verificar si ya existe la nueva en columna K
+    if (colsActual >= COLUMNA_K) {
+      const valorK = hoja.getRange(1, COLUMNA_K).getValue();
+      const valorKStr = valorK ? valorK.toString().toLowerCase() : '';
+      if (valorKStr.includes('no terminó') && (valorKStr.includes('sí') || valorKStr.includes('no)'))) {
+        return; // Ya existe la nueva columna
+      }
+    }
+
+    // PASO 3: Insertar nueva columna en K
+    if (colsActual < COLUMNA_K) {
+      // Si hay menos de 11 columnas, agregar hasta llegar a K
       while (hoja.getLastColumn() < COLUMNA_K) {
         hoja.insertColumnAfter(hoja.getLastColumn());
       }
-    } else {
-      // Si ya hay columna K o más, insertar antes de K
+    } else if (colsActual >= COLUMNA_K) {
+      // Si ya hay columna K, insertar antes
       hoja.insertColumnBefore(COLUMNA_K);
     }
 
     const nuevaCol = COLUMNA_K;
 
+    // PASO 4: Configurar nueva columna
     if (nombre === '📋 Seguimiento General') {
       hoja.getRange(1, nuevaCol).setValue('No terminó formación (Sí/No)');
       hoja.getRange(1, nuevaCol).setBackground('#FFF9C4').setFontWeight('bold').setHorizontalAlignment('center');
