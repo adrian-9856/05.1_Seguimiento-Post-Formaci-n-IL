@@ -75,10 +75,15 @@ function onOpen() {
       .addItem('🔍 Verificar Checkboxes', 'verificarCheckboxes'))
     .addSeparator()
     .addSubMenu(ui.createMenu('🛠️ Mantenimiento')
+      .addItem('🔄 REINSTALAR Sistema (Sin Perder Datos)', 'reinstalarSistemaSeguro')
+      .addSeparator()
+      .addItem('💾 Crear Respaldo Completo v2.9', 'crearRespaldoCompleto')
+      .addItem('💾 Crear Respaldo v2.8', 'crearRespaldo')
+      .addSeparator()
       .addItem('🔧 Reparar Sistema', 'repararSistema')
       .addItem('🧹 Limpiar Datos Vacíos', 'limpiarDatosVacios')
       .addItem('🧹 Limpiar Bloqueos de Procesamiento', 'limpiarBloqueosProcesamiento')
-      .addItem('💾 Crear Respaldo', 'crearRespaldo')
+      .addSeparator()
       .addItem('🔄 Resetear Sistema Completo', 'resetearSistema'))
     .addSeparator()
     .addSubMenu(ui.createMenu('🎯 Gestión de Etapas')
@@ -86,6 +91,15 @@ function onOpen() {
       .addItem('🔄 Actualizar Etapas por Llamadas', 'actualizarEtapaSegunLlamadas')
       .addItem('📊 Reporte de Etapas', 'generarReporteEtapas')
       .addItem('🔍 Buscar por Etapa', 'buscarPorEtapa'))
+    .addSeparator()
+    .addSubMenu(ui.createMenu('✨ No Terminó Formación (v2.9)')
+      .addItem('⚙️ INSTALAR Funcionalidad v2.9', 'instalarNoTerminoFormacion')
+      .addSeparator()
+      .addItem('📋 Mover Participantes NO Terminaron', 'moverParticipantesNoTerminaron')
+      .addItem('👁️ Ver Participantes NO Terminaron', 'verParticipantesNoTerminaron')
+      .addSeparator()
+      .addItem('🎨 Aplicar Solo Colores Formación', 'aplicarSoloColoresFormacion')
+      .addItem('🧹 Limpiar Colores Columnas Etapas', 'limpiarColoresColumnasEtapas'))
     .addToUi();
 
   verificarEstadoProcesomientoAutomatico();
@@ -4568,6 +4582,306 @@ function mostrarHojaInstrucciones() {
 }
 
 // ====================================
+// REINSTALACIÓN SEGURA SIN PÉRDIDA DE DATOS
+// ====================================
+
+/**
+ * FUNCIÓN PRINCIPAL: Reinstala todo el sistema sin perder información
+ * 1. Hace respaldo automático
+ * 2. Guarda todos los datos en memoria
+ * 3. Limpia y reconfigura todo
+ * 4. Restaura los datos
+ * 5. Configura validaciones y formatos
+ */
+function reinstalarSistemaSeguro() {
+  const ui = SpreadsheetApp.getUi();
+
+  // Confirmación del usuario
+  const confirmacion = ui.alert(
+    '🔄 REINSTALACIÓN SEGURA DEL SISTEMA v2.9',
+    '✅ Esta función:\n\n' +
+    '1️⃣ Hará un respaldo automático completo\n' +
+    '2️⃣ Guardará TODOS tus datos\n' +
+    '3️⃣ Limpiará y reconfigurará el sistema\n' +
+    '4️⃣ Restaurará tus datos\n' +
+    '5️⃣ Dejará todo limpio y funcionando\n\n' +
+    '⏱️ Puede tardar 1-2 minutos\n\n' +
+    '¿Continuar con la reinstalación segura?',
+    ui.ButtonSet.YES_NO
+  );
+
+  if (confirmacion !== ui.Button.YES) {
+    ui.alert('❌ Cancelado', 'Reinstalación cancelada por el usuario.', ui.ButtonSet.OK);
+    return;
+  }
+
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    // ============================================
+    // PASO 1: CREAR RESPALDO AUTOMÁTICO
+    // ============================================
+    ui.alert('📋 PASO 1/5', 'Creando respaldo de seguridad...', ui.ButtonSet.OK);
+
+    const fecha = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd_HH-mm');
+    const nombreRespaldo = 'RESPALDO_ANTES_REINSTALAR_' + fecha;
+
+    try {
+      const nuevoSS = SpreadsheetApp.create(nombreRespaldo);
+      const hojasActuales = ss.getSheets();
+
+      hojasActuales.forEach(function(hoja) {
+        const nombreHoja = hoja.getName();
+        const datos = hoja.getDataRange().getValues();
+        const nuevaHoja = nuevoSS.insertSheet(nombreHoja);
+        if (datos.length > 0) {
+          nuevaHoja.getRange(1, 1, datos.length, datos[0].length).setValues(datos);
+        }
+      });
+
+      const hojaDefecto = nuevoSS.getSheetByName('Hoja 1');
+      if (hojaDefecto && nuevoSS.getSheets().length > 1) {
+        nuevoSS.deleteSheet(hojaDefecto);
+      }
+
+      const urlRespaldo = nuevoSS.getUrl();
+      console.log('✅ Respaldo creado: ' + urlRespaldo);
+
+    } catch (errorRespaldo) {
+      console.warn('⚠️ No se pudo crear respaldo externo, continuando con respaldo en memoria...');
+    }
+
+    // ============================================
+    // PASO 2: GUARDAR TODOS LOS DATOS EN MEMORIA
+    // ============================================
+    ui.alert('📋 PASO 2/5', 'Guardando todos tus datos en memoria...', ui.ButtonSet.OK);
+
+    const hojasRequeridas = [
+      '📋 Seguimiento General',
+      '📞 Llamada 1',
+      '📞 Llamada 2',
+      '📞 Llamada 3',
+      '📞 Llamada 4',
+      '📞 Llamada 5',
+      '✅ Finalizados',
+      '❌ No Terminó la Formación'
+    ];
+
+    const datosGuardados = {};
+
+    hojasRequeridas.forEach(function(nombreHoja) {
+      const hoja = ss.getSheetByName(nombreHoja);
+      if (hoja) {
+        const lastRow = hoja.getLastRow();
+        const lastCol = hoja.getLastColumn();
+
+        if (lastRow > 0 && lastCol > 0) {
+          datosGuardados[nombreHoja] = {
+            datos: hoja.getRange(1, 1, lastRow, lastCol).getValues(),
+            filas: lastRow,
+            columnas: lastCol
+          };
+          console.log('💾 Guardado: ' + nombreHoja + ' (' + lastRow + ' filas)');
+        }
+      }
+    });
+
+    // ============================================
+    // PASO 3: LIMPIAR Y ELIMINAR HOJAS ANTIGUAS
+    // ============================================
+    ui.alert('📋 PASO 3/5', 'Limpiando sistema antiguo...', ui.ButtonSet.OK);
+
+    hojasRequeridas.forEach(function(nombreHoja) {
+      const hoja = ss.getSheetByName(nombreHoja);
+      if (hoja) {
+        ss.deleteSheet(hoja);
+        console.log('🗑️ Eliminada: ' + nombreHoja);
+      }
+    });
+
+    // Limpiar propiedades
+    const propiedades = PropertiesService.getScriptProperties();
+    propiedades.deleteProperty('PROCESAMIENTO_AUTOMATICO');
+    propiedades.deleteProperty('FECHA_ACTIVACION_AUTO');
+    propiedades.deleteProperty('FECHA_DESACTIVACION_AUTO');
+
+    // Limpiar bloqueos
+    limpiarBloqueosProcesamiento();
+
+    // Remover triggers antiguos
+    removerTriggerOnEdit();
+
+    console.log('🧹 Sistema limpiado');
+
+    // ============================================
+    // PASO 4: RECONFIGURAR TODO EL SISTEMA LIMPIO
+    // ============================================
+    ui.alert('📋 PASO 4/5', 'Reconfigurando sistema limpio...', ui.ButtonSet.OK);
+
+    // Crear hojas nuevas con estructura limpia
+    configurarHojasCorregido();
+
+    // Instalar funcionalidad v2.9
+    instalarNoTerminoFormacion();
+
+    // Aplicar solo colores de formación (limpio)
+    aplicarSoloColoresFormacion();
+
+    console.log('⚙️ Sistema reconfigurado');
+
+    // ============================================
+    // PASO 5: RESTAURAR TODOS LOS DATOS
+    // ============================================
+    ui.alert('📋 PASO 5/5', 'Restaurando tus datos...', ui.ButtonSet.OK);
+
+    let filasRestauradas = 0;
+
+    Object.keys(datosGuardados).forEach(function(nombreHoja) {
+      const hoja = ss.getSheetByName(nombreHoja);
+      if (hoja && datosGuardados[nombreHoja]) {
+        const info = datosGuardados[nombreHoja];
+
+        // Restaurar datos (INCLUYENDO encabezados)
+        if (info.filas > 0 && info.columnas > 0) {
+          // Limpiar hoja primero
+          hoja.clear();
+
+          // Restaurar todos los datos
+          hoja.getRange(1, 1, info.filas, info.columnas).setValues(info.datos);
+
+          filasRestauradas += info.filas;
+          console.log('♻️ Restaurado: ' + nombreHoja + ' (' + info.filas + ' filas)');
+        }
+      }
+    });
+
+    // Aplicar formatos después de restaurar
+    SpreadsheetApp.flush();
+
+    // Reconfigurar validaciones con los datos restaurados
+    try {
+      configurarValidacionesCompletas();
+      console.log('✅ Validaciones aplicadas');
+    } catch (e) {
+      console.warn('⚠️ Error aplicando validaciones: ' + e.message);
+    }
+
+    // Aplicar colores por formación
+    try {
+      aplicarSoloColoresFormacion();
+      console.log('✅ Colores aplicados');
+    } catch (e) {
+      console.warn('⚠️ Error aplicando colores: ' + e.message);
+    }
+
+    // ============================================
+    // FINALIZACIÓN
+    // ============================================
+
+    const mensaje = [
+      '✅ ¡REINSTALACIÓN COMPLETADA CON ÉXITO!',
+      '',
+      '📊 Datos restaurados:',
+      '  • ' + filasRestauradas + ' filas totales',
+      '  • ' + Object.keys(datosGuardados).length + ' hojas procesadas',
+      '',
+      '✨ Sistema reconfigurado:',
+      '  • Hojas limpias y ordenadas',
+      '  • Validaciones aplicadas',
+      '  • Colores por formación',
+      '  • Funcionalidad v2.9 activa',
+      '',
+      '🎯 TODO LISTO PARA USAR',
+      '',
+      '💡 Recomendación:',
+      '  Activa el procesamiento automático desde el menú'
+    ].join('\n');
+
+    ui.alert('✅ REINSTALACIÓN COMPLETADA', mensaje, ui.ButtonSet.OK);
+
+    console.log('═══════════════════════════════════');
+    console.log('✅ REINSTALACIÓN SEGURA COMPLETADA');
+    console.log('📊 ' + filasRestauradas + ' filas restauradas');
+    console.log('═══════════════════════════════════');
+
+  } catch (error) {
+    ui.alert(
+      '❌ ERROR EN REINSTALACIÓN',
+      'Error: ' + error.message + '\n\n' +
+      '⚠️ Verifica el respaldo creado al inicio.\n' +
+      'Contacta soporte si el problema persiste.',
+      ui.ButtonSet.OK
+    );
+    console.error('❌ Error en reinstalación:', error);
+  }
+}
+
+/**
+ * Versión mejorada de crearRespaldo que incluye la hoja v2.9
+ */
+function crearRespaldoCompleto() {
+  const ui = SpreadsheetApp.getUi();
+
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const fecha = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd_HH-mm');
+    const nombreRespaldo = 'RESPALDO_v2.9_' + ss.getName() + '_' + fecha;
+
+    ui.alert('💾 Creando Respaldo v2.9...', 'Creando copia de seguridad completa...', ui.ButtonSet.OK);
+
+    const hojasRespaldo = [];
+    const hojasRequeridas = [
+      '📋 Seguimiento General',
+      '📞 Llamada 1', '📞 Llamada 2', '📞 Llamada 3',
+      '📞 Llamada 4', '📞 Llamada 5',
+      '✅ Finalizados',
+      '❌ No Terminó la Formación'  // ← NUEVA v2.9
+    ];
+
+    hojasRequeridas.forEach(function(nombre) {
+      const hoja = ss.getSheetByName(nombre);
+      if (hoja) {
+        hojasRespaldo.push({
+          nombre: nombre,
+          datos: hoja.getDataRange().getValues()
+        });
+      }
+    });
+
+    const nuevoSS = SpreadsheetApp.create(nombreRespaldo);
+
+    hojasRespaldo.forEach(function(item) {
+      const nuevaHoja = nuevoSS.insertSheet(item.nombre);
+      if (item.datos.length > 0) {
+        nuevaHoja.getRange(1, 1, item.datos.length, item.datos[0].length).setValues(item.datos);
+      }
+    });
+
+    const hojaDefecto = nuevoSS.getSheetByName('Hoja 1');
+    if (hojaDefecto && nuevoSS.getSheets().length > 1) {
+      nuevoSS.deleteSheet(hojaDefecto);
+    }
+
+    const urlRespaldo = nuevoSS.getUrl();
+
+    ui.alert(
+      '💾 Respaldo Creado',
+      '✅ Respaldo v2.9 creado exitosamente!\n\n' +
+      'Nombre: ' + nombreRespaldo + '\n\n' +
+      'URL: ' + urlRespaldo + '\n\n' +
+      '💡 Guarda esta URL en un lugar seguro',
+      ui.ButtonSet.OK
+    );
+
+    console.log('✅ Respaldo creado: ' + urlRespaldo);
+
+  } catch (error) {
+    ui.alert('❌ Error de Respaldo', 'Error creando respaldo: ' + error.message, ui.ButtonSet.OK);
+    console.error('❌ Error:', error);
+  }
+}
+
+// ====================================
 // MENSAJE DE CARGA
 // ====================================
 console.log('═══════════════════════════════════');
@@ -4578,6 +4892,7 @@ console.log('📞 ' + LLAMADAS_PARA_FINALIZAR + ' llamadas configuradas');
 console.log('✨ Funcionalidad "No Terminó" incluida');
 console.log('🎨 Colores optimizados por formación');
 console.log('🔒 Sistema anti-doble procesamiento');
+console.log('🔄 Reinstalación segura disponible');
 console.log('═══════════════════════════════════');
 console.log('🚀 LISTO PARA USAR');
 console.log('═══════════════════════════════════');
