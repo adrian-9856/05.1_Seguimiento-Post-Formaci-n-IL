@@ -128,7 +128,7 @@ function crearHojaNoTerminoLimpia() {
 }
 
 // ═══════════════════════════════════════════════
-// 🎯 FUNCIÓN 3: AGREGAR COLUMNA "SÍ/NO"
+// 🎯 FUNCIÓN 3: AGREGAR COLUMNA "SÍ/NO" EN COLUMNA K
 // ═══════════════════════════════════════════════
 function agregarColumnaSiNoSoloNueva() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -138,6 +138,7 @@ function agregarColumnaSiNoSoloNueva() {
     '📞 Llamada 4', '📞 Llamada 5', '✅ Finalizados'
   ];
 
+  const COLUMNA_K = 11; // Posición K
   let hojasActualizadas = 0;
 
   hojas.forEach(nombre => {
@@ -147,23 +148,26 @@ function agregarColumnaSiNoSoloNueva() {
     const cols = hoja.getLastColumn();
     const encs = hoja.getRange(1, 1, 1, cols).getValues()[0];
 
-    // Verificar si ya existe
-    if (encs.some(h => h && h.toString().toLowerCase().includes('no terminó') && h.toString().toLowerCase().includes('sí'))) return;
-
-    // Buscar "Total Llamadas"
-    let colLlamadas = -1;
-    for (let i = 0; i < encs.length; i++) {
-      if (encs[i] && encs[i].toString().toLowerCase().includes('total llamadas')) {
-        colLlamadas = i + 1;
-        break;
+    // Verificar si ya existe en columna K
+    if (cols >= COLUMNA_K) {
+      const valorK = hoja.getRange(1, COLUMNA_K).getValue();
+      if (valorK && valorK.toString().toLowerCase().includes('no terminó') && valorK.toString().toLowerCase().includes('sí')) {
+        return; // Ya existe
       }
     }
 
-    if (colLlamadas === -1) return;
+    // Insertar columna en posición K (después de la columna J)
+    if (cols < COLUMNA_K) {
+      // Si hay menos columnas, agregar hasta llegar a K
+      while (hoja.getLastColumn() < COLUMNA_K) {
+        hoja.insertColumnAfter(hoja.getLastColumn());
+      }
+    } else {
+      // Si ya hay columna K o más, insertar antes de K
+      hoja.insertColumnBefore(COLUMNA_K);
+    }
 
-    // Insertar columna
-    hoja.insertColumnAfter(colLlamadas);
-    const nuevaCol = colLlamadas + 1;
+    const nuevaCol = COLUMNA_K;
 
     if (nombre === '📋 Seguimiento General') {
       hoja.getRange(1, nuevaCol).setValue('No terminó formación (Sí/No)');
