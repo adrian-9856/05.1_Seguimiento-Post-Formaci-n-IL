@@ -1,226 +1,180 @@
-# 🚀 Sistema de Seguimiento v2.9 - Actualización Segura
+# 🚀 Sistema de Seguimiento v2.9 - Código Limpio y Unificado
 
-## 📋 RESUMEN EJECUTIVO
+## ⭐ ARCHIVO PRINCIPAL
 
-Has recibido una actualización **SEGURA** que agrega:
-- ✅ Hoja "❌ No Terminó la Formación"
-- ✅ Columna "No terminó formación (Sí/No)"
-- ✅ Instalador automático
-- ✅ **SIN BORRAR NINGÚN DATO**
+### 📄 `CODIGO_FINAL_COMPLETO.gs` ← **USA SOLO ESTE**
+
+Este es el **ÚNICO archivo que necesitas** para instalar todo el sistema v2.9.
 
 ---
 
-## 🎯 ARCHIVOS IMPORTANTES
+## 🎯 QUÉ INCLUYE
 
-### 📄 `CODIGO_COMPLETO_PARA_COPIAR.gs`
-**👉 ESTE ES EL QUE DEBES USAR**
+### ✅ Funcionalidades:
+1. **Hoja "❌ No Terminó la Formación"** (encabezados rojos)
+2. **Columna "No terminó formación (Sí/No)"** (amarilla)
+3. **Funciones de movimiento automático**
+4. **Reportes de abandonos**
 
-Contiene:
-- ✅ Instalador automático completo
-- ✅ Todas las funciones necesarias
-- ✅ Listo para copiar y pegar
+### 🎨 Colores Limpios:
+1. **SIN colores en columnas de etapas** (Aliados, Plataformas, etc.)
+2. **CON colores SOLO por formación** (Barismo azul, Gastronomía amarillo, etc.)
+3. **Colores fijos en hojas de llamadas** (Llamada 1 azul, Llamada 2 morado, etc.)
 
-**Cómo usarlo**:
-1. Abre tu Google Sheet
-2. Ve a: Extensiones → Apps Script
-3. **Copia TODO el código** de este archivo
-4. **Pega AL FINAL** de tu código actual
-5. Guarda (Ctrl+S)
-6. Ejecuta: `instalarNuevasFuncionesSeguro`
-7. Recarga la página
-8. ¡Listo!
-
----
-
-### 📖 `GUIA_RAPIDA_INSTALACION.md`
-**Guía paso a paso con imágenes y ejemplos**
-
-Lee esto si:
-- ❓ Es tu primera vez instalando
-- ❓ Tienes dudas sobre los pasos
-- ❓ Quieres ver ejemplos visuales
+### 🔒 Garantías:
+- ✅ NO borra datos
+- ✅ NO reinicia el sistema
+- ✅ NO afecta configuraciones
+- ✅ Solo agrega lo nuevo
 
 ---
 
-### 🔧 `INSTALADOR_SEGURO.gs`
-**Instalador standalone (opcional)**
+## 🚀 INSTALACIÓN RÁPIDA
 
-Úsalo si:
-- Prefieres instalar paso por paso
-- Quieres más control del proceso
-- Tienes problemas con el instalador completo
-
----
-
-### 📦 `Code_Mejorado_v2.9.gs`
-**Código completo del sistema v2.9**
-
-Este es el código COMPLETO si quisieras:
-- Empezar desde cero
-- Ver todas las funciones disponibles
-- Comparar con tu código actual
-
-⚠️ **NO LO USES para actualizar** - usa `CODIGO_COMPLETO_PARA_COPIAR.gs`
-
----
-
-### ➕ `AGREGAR_AL_CODIGO_EXISTENTE.gs`
-**Funciones adicionales sueltas**
-
-Para usuarios avanzados que:
-- Quieren ver las funciones por separado
-- Prefieren copiar función por función
-- Necesitan entender el código antes de instalar
-
----
-
-## 🎯 INSTALACIÓN RÁPIDA (3 PASOS)
-
-### 1️⃣ COPIAR CÓDIGO
+### 1️⃣ COPIAR
 ```
-1. Abre: CODIGO_COMPLETO_PARA_COPIAR.gs
-2. Selecciona todo (Ctrl+A)
-3. Copia (Ctrl+C)
+Archivo: CODIGO_FINAL_COMPLETO.gs
+Ctrl+A (seleccionar todo)
+Ctrl+C (copiar)
 ```
 
-### 2️⃣ PEGAR EN APPS SCRIPT
+### 2️⃣ PEGAR
 ```
-1. Google Sheet → Extensiones → Apps Script
-2. Ve AL FINAL de tu código
-3. Pega (Ctrl+V)
-4. Guarda (Ctrl+S)
+Google Sheet → Extensiones → Apps Script
+Ve AL FINAL de tu código actual
+Ctrl+V (pegar)
+Ctrl+S (guardar)
 ```
 
-### 3️⃣ EJECUTAR INSTALADOR
+### 3️⃣ EJECUTAR
 ```
-1. Selecciona: instalarNuevasFuncionesSeguro
-2. Click en ▶️ Ejecutar
-3. Acepta permisos (si pide)
-4. Sigue los 5 pasos en pantalla
-5. Recarga tu Google Sheet
+Función: instalarSistemaCompletoV29
+Click en ▶️ Ejecutar
+Acepta permisos
+Sigue los 6 pasos automáticos
+Recarga la página (F5)
 ```
 
 ---
 
-## ✅ QUÉ SE INSTALARÁ
+## 📖 GUÍAS DISPONIBLES
 
-### 📄 Nueva Hoja
-- **Nombre**: `❌ No Terminó la Formación`
-- **Encabezados**: Rojo oscuro (#C62828)
-- **Datos**: Fondo rojo claro (#FFCDD2)
-- **18 columnas**: Igual que otras hojas pero adaptada
-
-### 🟨 Nueva Columna
-- **Nombre**: `No terminó formación (Sí/No)`
-- **Color**: Amarillo (#FFF9C4)
-- **Ubicación**: Entre "Total Llamadas" y "Procesar"
-- **Tipo**: Desplegable con opciones Sí/No
-- **Valor por defecto**: No
-
-### ⚙️ Nuevas Funciones
-1. **`instalarNuevasFuncionesSeguro()`**
-   - Instalador automático
-   - Verifica qué falta
-   - Solo instala lo necesario
-   - 100% seguro
-
-2. **`moverANoTerminoFormacionManual()`**
-   - Mueve participantes marcados con "Sí"
-   - De "Seguimiento General" a "No Terminó"
-   - Procesa múltiples a la vez
-   - Mantiene todo el historial
-
-3. **`verParticipantesNoTerminaron()`**
-   - Muestra reporte de abandonos
-   - Top 10 más recientes
-   - Con fecha, formación y llamadas
-   - Desde cualquier lugar
-
-4. **`procesarNoTerminoFormacion_NUEVO()`**
-   - Procesa automáticamente cada participante
-   - Busca columnas dinámicamente
-   - Compatible con cualquier estructura
-   - Manejo de errores robusto
+### 📄 `GUIA_SIMPLE_USO.md`
+Guía rápida con:
+- Paso a paso de instalación
+- Casos de uso
+- Solución de problemas
+- Preguntas frecuentes
 
 ---
 
-## 🎨 CÓMO SE VE
+## 🎨 RESULTADO VISUAL
 
-### Antes:
+### ANTES (con colores en columnas):
 ```
-| ID | Nombre | Teléfono | ... | Total Llamadas | Procesar |
-|  1 | Juan   | 123456   | ... |       3        |    ☐     |
+| Formación    | Aliados 🔵 | Plataformas 🟣 | Conexión 🟢 |
+| Barismo      |   texto    |     texto      |    texto    |
+| Gastronomía  |   texto    |     texto      |    texto    |
 ```
+❌ **Problema**: Muchos colores interfieren y se ve confuso
 
-### Después:
+### DESPUÉS (colores limpios):
 ```
-| ID | Nombre | Teléfono | ... | Total Llamadas | No terminó (Sí/No) | Procesar |
-|  1 | Juan   | 123456   | ... |       3        |        No ⬇️       |    ☐     |
+| Formación    | Aliados    | Plataformas    | Conexión    |
+| Barismo      |   texto    |     texto      |    texto    | ← AZUL CLARO
+| Gastronomía  |   texto    |     texto      |    texto    | ← AMARILLO
 ```
-
-### Nueva Hoja "❌ No Terminó la Formación":
-```
-🔴 ENCABEZADOS ROJOS
-| ID | Nombre | Formación | ... | Fecha Abandono |
-| 50 | María  | Barismo   | ... | 14/12/2024     | 🔴 Fondo rojo claro
-```
+✅ **Solución**: Colores solo por formación, aspecto limpio
 
 ---
 
-## 💡 CASOS DE USO
+## 💡 FUNCIONES PRINCIPALES
 
-### 🎯 Caso 1: Marcar un abandono
-```
-1. Ve a "📋 Seguimiento General"
-2. Busca al participante
-3. En columna amarilla "No terminó formación (Sí/No)"
-4. Selecciona: Sí
-```
-
-### 🎯 Caso 2: Mover abandonos
-```
-OPCIÓN A - Desde Apps Script:
-1. Apps Script → instalarNuevasFuncionesSeguro
-2. Ejecutar: moverANoTerminoFormacionManual
-3. Confirmar
-
-OPCIÓN B - Desde menú (recomendado):
-1. Agrega al menú (ver abajo)
-2. Menú → ❌ No Terminó → Mover Participantes
-3. Confirmar
-```
-
-### 🎯 Caso 3: Ver reportes
-```
-1. Ejecuta: verParticipantesNoTerminaron
-2. O visita la hoja: "❌ No Terminó la Formación"
-```
-
----
-
-## 🎯 AGREGAR AL MENÚ (RECOMENDADO)
-
-En tu función `onOpen()`, **ANTES de** `.addToUi();` agrega:
-
+### 🔧 Para instalar:
 ```javascript
-.addSeparator()
-.addSubMenu(ui.createMenu('❌ No Terminó Formación')
-  .addItem('🔄 Mover Participantes Marcados', 'moverANoTerminoFormacionManual')
-  .addItem('📊 Ver Participantes', 'verParticipantesNoTerminaron'))
+instalarSistemaCompletoV29()
 ```
+Instala TODO automáticamente (hoja + columna + colores limpios)
 
-**Ejemplo completo**:
+### 🔄 Para mover participantes:
+```javascript
+moverANoTerminoFormacionManualV29()
+```
+Mueve todos los marcados con "Sí" a la hoja de abandonos
+
+### 📊 Para ver reportes:
+```javascript
+verParticipantesNoTerminaronV29()
+```
+Muestra reporte de participantes que no terminaron
+
+### 🎨 Para limpiar colores:
+```javascript
+aplicarFormatoCompletoV29()
+```
+Limpia colores de columnas y deja solo los de formación
+
+---
+
+## 📋 OTROS ARCHIVOS (REFERENCIA)
+
+Los siguientes archivos son de **referencia** o **versiones anteriores**:
+
+- `Code_Mejorado_v2.9.gs` - Código completo (versión extendida)
+- `CODIGO_COMPLETO_PARA_COPIAR.gs` - Versión anterior
+- `INSTALADOR_SEGURO.gs` - Instalador standalone
+- `AGREGAR_AL_CODIGO_EXISTENTE.gs` - Funciones sueltas
+
+⚠️ **NO los uses** si ya tienes `CODIGO_FINAL_COMPLETO.gs`
+
+---
+
+## 🎨 COLORES POR FORMACIÓN
+
+| Formación | Color |
+|-----------|-------|
+| Barismo | 🔵 Azul claro (#BBDEFB) |
+| Gastronomía | 🟡 Amarillo (#FFECB3) |
+| Food Manager | 🟢 Verde (#E8F5E8) |
+| Panadería | 🟡 Amarillo claro (#F3E5AB) |
+| Repostería | 🌸 Rosa (#F8BBD9) |
+| Sommelier | 🟣 Morado (#E1BEE7) |
+| Análisis de datos | 🔷 Cyan (#B2EBF2) |
+| SAC | 🌿 Verde lima (#C5E1A5) |
+| Ofimática | 🟣 Lila (#D1C4E9) |
+| Otra | ⚪ Gris (#E0E0E0) |
+
+---
+
+## 🎯 COLORES DE HOJAS
+
+| Hoja | Color Encabezado |
+|------|------------------|
+| 📞 Llamada 1 | 🔵 Azul (#1976d2) |
+| 📞 Llamada 2 | 🟣 Morado (#7b1fa2) |
+| 📞 Llamada 3 | 🟠 Naranja (#f57c00) |
+| 📞 Llamada 4 | 🟡 Amarillo (#ff8f00) |
+| 📞 Llamada 5 | 🌸 Rosa (#c2185b) |
+| ✅ Finalizados | 🟢 Verde (#388e3c) |
+| ❌ No Terminó | 🔴 Rojo (#C62828) |
+
+---
+
+## 🛠️ AGREGAR AL MENÚ
+
+Para acceder fácilmente desde el menú de Google Sheets:
+
 ```javascript
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu('🎓 Sistema de Seguimiento')
-    .addItem('📖 Ver Instrucciones', 'mostrarHojaInstrucciones')
-    // ... tus otros items ...
+    // ... tus items existentes ...
     .addSeparator()
     .addSubMenu(ui.createMenu('❌ No Terminó Formación')
-      .addItem('🔄 Mover Participantes Marcados', 'moverANoTerminoFormacionManual')
-      .addItem('📊 Ver Participantes', 'verParticipantesNoTerminaron'))
-    .addToUi(); // ← ESTO AL FINAL
+      .addItem('🔄 Mover Participantes', 'moverANoTerminoFormacionManualV29')
+      .addItem('📊 Ver Participantes', 'verParticipantesNoTerminaronV29')
+      .addItem('🎨 Aplicar Formato Limpio', 'aplicarFormatoCompletoV29'))
+    .addToUi();
 }
 ```
 
@@ -228,206 +182,97 @@ Guarda, recarga y verás el nuevo menú.
 
 ---
 
-## 🔒 GARANTÍAS
-
-### ✅ NO se borrará:
-- Ningún dato de participantes
-- Ninguna hoja existente
-- Ninguna configuración
-- Ningún formato
-- Ninguna fórmula
-
-### ✅ Solo se agregará:
-- 1 hoja nueva
-- 1 columna nueva
-- 4 funciones nuevas
-- Nada más
-
-### ✅ Seguirá funcionando:
-- Procesamiento automático
-- Checkboxes
-- Importación de datos
-- Todas las funciones existentes
-- Menú actual
-
----
-
 ## ⚠️ PREGUNTAS FRECUENTES
 
-### ❓ ¿Cuánto tiempo toma?
-**R:** 30-60 segundos (5 pasos automáticos)
+### ❓ ¿Qué archivo debo usar?
+**`CODIGO_FINAL_COMPLETO.gs`** - Es el único que necesitas.
 
-### ❓ ¿Puedo deshacer?
-**R:** Sí, simplemente borra:
-- La hoja "❌ No Terminó la Formación"
-- La columna amarilla "No terminó formación (Sí/No)"
-- Las funciones nuevas del código
+### ❓ ¿Se borrarán mis datos?
+**NO**. El código solo agrega, no borra nada.
 
-### ❓ ¿Afecta el checkbox "Procesar"?
-**R:** NO. Solo se mueve UNA columna a la derecha, sigue funcionando igual.
+### ❓ ¿Los colores de las columnas desaparecerán?
+**SÍ**. Los colores de las columnas de etapas se limpiarán. Solo quedarán los colores por formación.
 
-### ❓ ¿Funciona con mis datos actuales?
-**R:** SÍ. Es 100% compatible con cualquier estructura.
+### ❓ ¿Los colores de las hojas de llamadas se mantienen?
+**SÍ**. Cada hoja mantiene su color característico.
 
-### ❓ ¿Qué pasa si ya tengo la columna?
-**R:** El instalador lo detecta y la omite.
+### ❓ ¿Puedo volver atrás?
+Sí, pero es más fácil **no instalar** si no estás seguro. Haz una copia de tu hoja antes.
 
-### ❓ ¿Qué pasa si ya tengo la hoja?
-**R:** El instalador lo detecta y la omite.
+### ❓ ¿Dónde quedó el checkbox "Procesar"?
+Se movió **una columna a la derecha** porque agregamos la columna "No terminó formación (Sí/No)".
 
-### ❓ ¿Puedo instalar parcialmente?
-**R:** SÍ. El instalador verifica qué falta y solo instala eso.
-
-### ❓ ¿Necesito ser programador?
-**R:** NO. Solo copiar, pegar y ejecutar. El instalador hace todo automático.
+### ❓ ¿Afecta el procesamiento automático?
+**NO**. Todo funciona igual, solo cambió la posición del checkbox.
 
 ---
 
-## 🛠️ SOLUCIÓN DE PROBLEMAS
-
-### ❌ "Función no encontrada"
-**Causa**: No copiaste todo el código
-**Solución**: Copia TODO desde `CODIGO_COMPLETO_PARA_COPIAR.gs`
-
-### ❌ "Permisos denegados"
-**Causa**: Google necesita autorización
-**Solución**:
-1. Click en "Revisar permisos"
-2. Selecciona tu cuenta
-3. "Avanzado" → "Ir a..."
-4. "Permitir"
-
-### ❌ No veo la columna amarilla
-**Causa**: No se recargó la página
-**Solución**: F5 o Ctrl+R
-
-### ❌ La hoja no aparece
-**Causa**: El instalador no terminó
-**Solución**: Ejecuta de nuevo `instalarNuevasFuncionesSeguro`
-
-### ❌ Error al mover participantes
-**Causa**: Estructura diferente
-**Solución**: El código busca columnas dinámicamente, debería funcionar. Si persiste, verifica nombres de columnas.
-
----
-
-## 📊 REPORTES DISPONIBLES
-
-### 1. Reporte de Abandonos
-```javascript
-verParticipantesNoTerminaron()
-```
-Muestra:
-- Total de abandonos
-- Top 10 más recientes
-- Formación, llamadas realizadas, fecha
-
-### 2. Dashboard Visual
-```
-Visita la hoja: "❌ No Terminó la Formación"
-```
-Verás:
-- Todos los abandonos con fondo rojo
-- Ordenados por fecha (más reciente arriba)
-- Con toda la información histórica
-
----
-
-## 🎓 PRÓXIMOS PASOS
-
-Después de instalar:
-
-1. **Prueba el sistema**:
-   - Marca un participante de prueba con "Sí"
-   - Muévelo a "No Terminó"
-   - Verifica que aparece en la hoja roja
-   - Revisa el reporte
-
-2. **Agrega al menú**:
-   - Sigue las instrucciones de arriba
-   - Recarga la página
-   - Verás el nuevo submenú
-
-3. **Capacita a tu equipo**:
-   - Muestra la columna amarilla
-   - Explica cuándo marcar "Sí"
-   - Enseña cómo mover participantes
-   - Comparte la hoja roja
-
-4. **Monitorea**:
-   - Revisa semanalmente los abandonos
-   - Analiza patrones (formación, llamadas)
-   - Toma acciones correctivas
-
----
-
-## 📞 SOPORTE
-
-### 🐛 Encontraste un bug?
-1. Ejecuta: `diagnosticarSistemaActual()`
-2. Anota el resultado
-3. Reporta con:
-   - Mensaje de error exacto
-   - Pasos para reproducir
-   - Resultado del diagnóstico
-
-### 💡 Tienes una sugerencia?
-¡Excelente! Comparte:
-- Qué funcionalidad te gustaría
-- Para qué la usarías
-- Cómo te ayudaría
-
-### 📚 Necesitas más información?
-Lee:
-- `GUIA_RAPIDA_INSTALACION.md` - Guía detallada
-- `CODIGO_COMPLETO_PARA_COPIAR.gs` - Código comentado
-
----
-
-## 📦 ARCHIVOS DEL PROYECTO
+## 📊 ESTRUCTURA DEL PROYECTO
 
 ```
 📁 Proyecto/
+├── ⭐ CODIGO_FINAL_COMPLETO.gs ← USA ESTE
+├── 📖 GUIA_SIMPLE_USO.md
 ├── 📄 README.md (este archivo)
-├── 📄 CODIGO_COMPLETO_PARA_COPIAR.gs ⭐ USA ESTE
-├── 📖 GUIA_RAPIDA_INSTALACION.md
-├── 🔧 INSTALADOR_SEGURO.gs
-├── 📦 Code_Mejorado_v2.9.gs
-└── ➕ AGREGAR_AL_CODIGO_EXISTENTE.gs
+│
+├── 📁 Archivos de referencia:
+│   ├── Code_Mejorado_v2.9.gs
+│   ├── CODIGO_COMPLETO_PARA_COPIAR.gs
+│   ├── INSTALADOR_SEGURO.gs
+│   ├── AGREGAR_AL_CODIGO_EXISTENTE.gs
+│   └── GUIA_RAPIDA_INSTALACION.md
 ```
 
 ---
 
 ## ✅ CHECKLIST DE INSTALACIÓN
 
-- [ ] Abrí el archivo `CODIGO_COMPLETO_PARA_COPIAR.gs`
+- [ ] Abrí `CODIGO_FINAL_COMPLETO.gs`
 - [ ] Copié TODO el código
-- [ ] Abrí Apps Script en mi Google Sheet
-- [ ] Pegué el código AL FINAL del actual
+- [ ] Abrí Apps Script
+- [ ] Pegué AL FINAL del código actual
 - [ ] Guardé (Ctrl+S)
-- [ ] Ejecuté `instalarNuevasFuncionesSeguro`
-- [ ] Acepté los permisos
-- [ ] Seguí los 5 pasos del instalador
-- [ ] Recar gué la página (F5)
-- [ ] Veo la nueva columna amarilla
-- [ ] Veo la nueva hoja roja
+- [ ] Ejecuté `instalarSistemaCompletoV29`
+- [ ] Acepté permisos
+- [ ] Seguí los 6 pasos
+- [ ] Recargué la página (F5)
+- [ ] Veo la columna amarilla
+- [ ] Los colores de etapas están limpios
+- [ ] Solo veo colores por formación
 - [ ] Probé marcar "Sí" en un participante
 - [ ] Probé mover el participante
-- [ ] Verifiqué que apareció en la hoja roja
-- [ ] Agregué las funciones al menú (opcional)
-- [ ] Capacité a mi equipo (opcional)
+- [ ] El participante aparece en la hoja roja
 
 ---
 
-**Versión**: 2.9
+## 🎉 RESULTADO FINAL
+
+Tu sistema tendrá:
+- ✅ Hoja para participantes que no terminaron
+- ✅ Columna Sí/No para marcarlos
+- ✅ Colores limpios (solo por formación)
+- ✅ Colores de hojas de llamadas intactos
+- ✅ Aspecto profesional y limpio
+- ✅ Funciones de movimiento automático
+- ✅ Reportes de abandonos
+
+---
+
+## 📞 SOPORTE
+
+### 🐛 ¿Problema?
+Ejecuta: `diagnosticarSistemaActualV29()`
+
+### 💡 ¿Dudas?
+Lee: `GUIA_SIMPLE_USO.md`
+
+### 🎨 ¿Colores no se limpiaron?
+Ejecuta: `aplicarFormatoCompletoV29()`
+
+---
+
+**Versión**: 2.9 - Limpio y Unificado
 **Fecha**: Diciembre 2024
-**Compatibilidad**: Google Sheets + Apps Script
 **Garantía**: 100% Seguro - No borra datos
 
----
-
-## 🎉 ¡Listo para usar!
-
-Si tienes dudas, revisa la `GUIA_RAPIDA_INSTALACION.md` o ejecuta el diagnóstico.
-
-**¡Éxito con tu sistema actualizado!** 🚀
+🎉 **¡Listo para usar!** 🚀
