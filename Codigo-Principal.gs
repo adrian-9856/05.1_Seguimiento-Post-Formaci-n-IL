@@ -4582,6 +4582,392 @@ function mostrarHojaInstrucciones() {
 }
 
 // ====================================
+// FUNCIONES v2.9: NO TERMINÓ LA FORMACIÓN
+// ====================================
+
+/**
+ * Instala la funcionalidad "No Terminó la Formación" v2.9
+ * - Crea la hoja si no existe
+ * - Agrega dropdown Sí/No en columna K
+ * - Limpia colores antiguos
+ * - Aplica solo colores por formación
+ */
+function instalarNoTerminoFormacion() {
+  const ui = SpreadsheetApp.getUi();
+
+  const confirmacion = ui.alert(
+    '✨ INSTALAR Funcionalidad v2.9',
+    '¿Deseas instalar/actualizar la funcionalidad "No Terminó la Formación"?\n\n' +
+    'Esto incluye:\n' +
+    '• Crear hoja "❌ No Terminó la Formación"\n' +
+    '• Agregar columna Sí/No en posición K\n' +
+    '• Limpiar colores antiguos\n' +
+    '• Aplicar colores solo por formación\n\n' +
+    '¿Continuar?',
+    ui.ButtonSet.YES_NO
+  );
+
+  if (confirmacion !== ui.Button.YES) {
+    ui.alert('❌ Cancelado', 'Instalación cancelada.', ui.ButtonSet.OK);
+    return;
+  }
+
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    // ============================================
+    // 1. CREAR HOJA "NO TERMINÓ LA FORMACIÓN"
+    // ============================================
+    let hojaNoTermino = ss.getSheetByName('❌ No Terminó la Formación');
+
+    if (!hojaNoTermino) {
+      hojaNoTermino = ss.insertSheet('❌ No Terminó la Formación');
+
+      // Crear encabezados
+      const encabezados = [
+        'ID',
+        'Nombre',
+        'Teléfono',
+        'Formación',
+        'Aliados',
+        'Plataformas',
+        'Conexión laboral',
+        'Por su cuenta',
+        'No busca trabajar',
+        'Empleado',
+        'No terminó formación',
+        'Etapa Actual',
+        'Resultados',
+        'Documentos',
+        'Fecha',
+        'Notas',
+        'Total Llamadas',
+        'Procesar'
+      ];
+
+      hojaNoTermino.getRange(1, 1, 1, encabezados.length).setValues([encabezados]);
+
+      // Formato de encabezados
+      const rangoEncabezados = hojaNoTermino.getRange(1, 1, 1, encabezados.length);
+      rangoEncabezados.setBackground('#990000');
+      rangoEncabezados.setFontColor('#FFFFFF');
+      rangoEncabezados.setFontWeight('bold');
+      rangoEncabezados.setHorizontalAlignment('center');
+      rangoEncabezados.setWrap(true);
+
+      hojaNoTermino.setFrozenRows(1);
+
+      console.log('✅ Hoja "❌ No Terminó la Formación" creada');
+    } else {
+      console.log('ℹ️ Hoja "❌ No Terminó la Formación" ya existe');
+    }
+
+    // ============================================
+    // 2. AGREGAR VALIDACIÓN SÍ/NO EN COLUMNA K
+    // ============================================
+    const hojasAProcesar = [
+      '📋 Seguimiento General',
+      '📞 Llamada 1',
+      '📞 Llamada 2',
+      '📞 Llamada 3',
+      '📞 Llamada 4',
+      '📞 Llamada 5'
+    ];
+
+    let hojasActualizadas = 0;
+
+    hojasAProcesar.forEach(function(nombreHoja) {
+      const hoja = ss.getSheetByName(nombreHoja);
+      if (!hoja) return;
+
+      const ultimaFila = Math.max(hoja.getLastRow(), 100);
+
+      // Crear validación Sí/No
+      const reglaValidacion = SpreadsheetApp.newDataValidation()
+        .requireValueInList(['Sí', 'No'], true)
+        .setAllowInvalid(false)
+        .build();
+
+      // Aplicar a columna K (11) desde fila 2
+      const rangoValidacion = hoja.getRange(2, COLUMNAS.NO_TERMINO_FORMACION, ultimaFila - 1, 1);
+      rangoValidacion.setDataValidation(reglaValidacion);
+
+      hojasActualizadas++;
+    });
+
+    console.log('✅ Validación Sí/No agregada en ' + hojasActualizadas + ' hojas');
+
+    // ============================================
+    // 3. LIMPIAR COLORES ANTIGUOS
+    // ============================================
+    limpiarColoresColumnasEtapas();
+
+    // ============================================
+    // 4. APLICAR SOLO COLORES POR FORMACIÓN
+    // ============================================
+    aplicarSoloColoresFormacion();
+
+    // ============================================
+    // FINALIZACIÓN
+    // ============================================
+    ui.alert(
+      '✅ INSTALACIÓN v2.9 COMPLETADA',
+      '✨ Funcionalidad instalada exitosamente!\n\n' +
+      '✅ Hoja "❌ No Terminó la Formación" lista\n' +
+      '✅ Columna K con dropdown Sí/No\n' +
+      '✅ Colores limpios aplicados\n\n' +
+      '📋 USO:\n' +
+      '1. Marca "Sí" en columna K para abandonos\n' +
+      '2. Ejecuta: Mover Participantes NO Terminaron\n\n' +
+      '🎯 ¡Todo listo!',
+      ui.ButtonSet.OK
+    );
+
+    console.log('═══════════════════════════════════');
+    console.log('✅ INSTALACIÓN v2.9 COMPLETADA');
+    console.log('═══════════════════════════════════');
+
+  } catch (error) {
+    ui.alert('❌ Error en Instalación', 'Error: ' + error.message, ui.ButtonSet.OK);
+    console.error('❌ Error:', error);
+  }
+}
+
+/**
+ * Limpia los colores de las columnas de etapas
+ * Mantiene solo el formato de encabezados
+ */
+function limpiarColoresColumnasEtapas() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  const hojasAProcesar = [
+    '📋 Seguimiento General',
+    '📞 Llamada 1',
+    '📞 Llamada 2',
+    '📞 Llamada 3',
+    '📞 Llamada 4',
+    '📞 Llamada 5',
+    '✅ Finalizados'
+  ];
+
+  const columnasEtapas = [
+    COLUMNAS.ALIADOS,
+    COLUMNAS.PLATAFORMAS,
+    COLUMNAS.CONEXION_LABORAL,
+    COLUMNAS.POR_SU_CUENTA,
+    COLUMNAS.NO_BUSCA_TRABAJAR,
+    COLUMNAS.EMPLEADO,
+    COLUMNAS.NO_TERMINO_FORMACION
+  ];
+
+  hojasAProcesar.forEach(function(nombreHoja) {
+    const hoja = ss.getSheetByName(nombreHoja);
+    if (!hoja) return;
+
+    const ultimaFila = hoja.getLastRow();
+    if (ultimaFila <= 1) return;
+
+    // Limpiar colores de las celdas de datos (no encabezados)
+    columnasEtapas.forEach(function(col) {
+      const rangoDatos = hoja.getRange(2, col, ultimaFila - 1, 1);
+      rangoDatos.setBackground(null); // Eliminar color de fondo
+      rangoDatos.setFontColor('#000000'); // Negro por defecto
+    });
+  });
+
+  console.log('🧹 Colores de columnas de etapas limpiados');
+}
+
+/**
+ * Aplica colores solo basados en la formación
+ * Limpia los colores de columnas de etapas
+ */
+function aplicarSoloColoresFormacion() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ui = SpreadsheetApp.getUi();
+
+  try {
+    const hojasAProcesar = [
+      '📋 Seguimiento General',
+      '📞 Llamada 1',
+      '📞 Llamada 2',
+      '📞 Llamada 3',
+      '📞 Llamada 4',
+      '📞 Llamada 5',
+      '✅ Finalizados'
+    ];
+
+    // Colores por formación
+    const coloresFormacion = {
+      'Cuidado Infantil': { fondo: '#E3F2FD', texto: '#0D47A1' },
+      'Desarrollo de Aplicaciones': { fondo: '#F3E5F5', texto: '#4A148C' },
+      'Comunicación Asertiva': { fondo: '#FFF9C4', texto: '#F57F17' },
+      'Atención al Cliente': { fondo: '#FFE0B2', texto: '#E65100' },
+      'Excel': { fondo: '#C8E6C9', texto: '#1B5E20' }
+    };
+
+    hojasAProcesar.forEach(function(nombreHoja) {
+      const hoja = ss.getSheetByName(nombreHoja);
+      if (!hoja) return;
+
+      const ultimaFila = hoja.getLastRow();
+      if (ultimaFila <= 1) return;
+
+      // Primero limpiar TODOS los colores de fondo de datos
+      const rangoCompleto = hoja.getRange(2, 1, ultimaFila - 1, hoja.getLastColumn());
+      rangoCompleto.setBackground(null);
+
+      // Obtener datos de formación
+      const datosFormacion = hoja.getRange(2, COLUMNAS.FORMACION, ultimaFila - 1, 1).getValues();
+
+      // Aplicar color por fila según formación
+      for (let i = 0; i < datosFormacion.length; i++) {
+        const formacion = datosFormacion[i][0];
+        const fila = i + 2;
+
+        if (formacion && coloresFormacion[formacion]) {
+          const rangoFila = hoja.getRange(fila, 1, 1, hoja.getLastColumn());
+          rangoFila.setBackground(coloresFormacion[formacion].fondo);
+          rangoFila.setFontColor(coloresFormacion[formacion].texto);
+        }
+      }
+    });
+
+    console.log('🎨 Colores por formación aplicados');
+
+  } catch (error) {
+    console.error('❌ Error aplicando colores:', error.message);
+  }
+}
+
+/**
+ * Mueve participantes que marcaron "Sí" en columna K
+ * a la hoja "❌ No Terminó la Formación"
+ */
+function moverParticipantesNoTerminaron() {
+  const ui = SpreadsheetApp.getUi();
+
+  const confirmacion = ui.alert(
+    '📋 MOVER Participantes NO Terminaron',
+    '¿Mover todos los participantes con "Sí" en columna K\n' +
+    'a la hoja "❌ No Terminó la Formación"?\n\n' +
+    'Los participantes serán eliminados de las hojas de seguimiento.',
+    ui.ButtonSet.YES_NO
+  );
+
+  if (confirmacion !== ui.Button.YES) {
+    ui.alert('❌ Cancelado', 'Operación cancelada.', ui.ButtonSet.OK);
+    return;
+  }
+
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const hojaNoTermino = ss.getSheetByName('❌ No Terminó la Formación');
+
+    if (!hojaNoTermino) {
+      ui.alert(
+        '❌ Error',
+        'La hoja "❌ No Terminó la Formación" no existe.\n\n' +
+        'Ejecuta primero: Menú → No Terminó Formación → INSTALAR v2.9',
+        ui.ButtonSet.OK
+      );
+      return;
+    }
+
+    const hojasOrigen = [
+      '📋 Seguimiento General',
+      '📞 Llamada 1',
+      '📞 Llamada 2',
+      '📞 Llamada 3',
+      '📞 Llamada 4',
+      '📞 Llamada 5'
+    ];
+
+    let totalMovidos = 0;
+
+    hojasOrigen.forEach(function(nombreHoja) {
+      const hoja = ss.getSheetByName(nombreHoja);
+      if (!hoja) return;
+
+      const ultimaFila = hoja.getLastRow();
+      if (ultimaFila <= 1) return;
+
+      const datos = hoja.getRange(2, 1, ultimaFila - 1, hoja.getLastColumn()).getValues();
+
+      // Procesar de abajo hacia arriba para evitar problemas al eliminar
+      for (let i = datos.length - 1; i >= 0; i--) {
+        const fila = datos[i];
+        const noTermino = fila[COLUMNAS.NO_TERMINO_FORMACION - 1];
+
+        if (noTermino === 'Sí') {
+          // Agregar a hoja de "No Terminó"
+          const ultimaFilaDestino = hojaNoTermino.getLastRow() + 1;
+          hojaNoTermino.getRange(ultimaFilaDestino, 1, 1, fila.length).setValues([fila]);
+
+          // Eliminar de hoja origen
+          hoja.deleteRow(i + 2);
+
+          totalMovidos++;
+        }
+      }
+    });
+
+    if (totalMovidos > 0) {
+      ui.alert(
+        '✅ Participantes Movidos',
+        '✅ Se movieron ' + totalMovidos + ' participantes\n' +
+        'a la hoja "❌ No Terminó la Formación"',
+        ui.ButtonSet.OK
+      );
+    } else {
+      ui.alert(
+        'ℹ️ Sin Participantes',
+        'No se encontraron participantes con "Sí" en columna K.',
+        ui.ButtonSet.OK
+      );
+    }
+
+    console.log('📋 Movidos ' + totalMovidos + ' participantes');
+
+  } catch (error) {
+    ui.alert('❌ Error', 'Error: ' + error.message, ui.ButtonSet.OK);
+    console.error('❌ Error:', error);
+  }
+}
+
+/**
+ * Muestra la hoja "❌ No Terminó la Formación"
+ */
+function verParticipantesNoTerminaron() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ui = SpreadsheetApp.getUi();
+
+  const hojaNoTermino = ss.getSheetByName('❌ No Terminó la Formación');
+
+  if (!hojaNoTermino) {
+    ui.alert(
+      '❌ Hoja No Encontrada',
+      'La hoja "❌ No Terminó la Formación" no existe.\n\n' +
+      'Ejecuta primero: Menú → No Terminó Formación → INSTALAR v2.9',
+      ui.ButtonSet.OK
+    );
+    return;
+  }
+
+  ss.setActiveSheet(hojaNoTermino);
+
+  const total = Math.max(hojaNoTermino.getLastRow() - 1, 0);
+
+  ui.alert(
+    '👁️ Participantes NO Terminaron',
+    '📊 Total de participantes: ' + total + '\n\n' +
+    'Esta hoja contiene todos los participantes\n' +
+    'que no completaron su formación.',
+    ui.ButtonSet.OK
+  );
+}
+
+// ====================================
 // REINSTALACIÓN SEGURA SIN PÉRDIDA DE DATOS
 // ====================================
 
