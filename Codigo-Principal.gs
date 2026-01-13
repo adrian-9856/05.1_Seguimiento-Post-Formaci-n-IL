@@ -100,6 +100,11 @@ function onOpen() {
       .addSeparator()
       .addItem('🎨 Aplicar Solo Colores Formación', 'aplicarSoloColoresFormacion')
       .addItem('🧹 Limpiar Colores Columnas Etapas', 'limpiarColoresColumnasEtapas'))
+    .addSeparator()
+    .addSubMenu(ui.createMenu('🆕 Instalación Limpia y Migración')
+      .addItem('✨ CREAR Sistema Nuevo Limpio', 'instalarSistemaLimpioNuevo')
+      .addSeparator()
+      .addItem('📥 IMPORTAR Datos Desde Archivo Anterior', 'importarDatosDesdeArchivoAnterior'))
     .addToUi();
 
   verificarEstadoProcesomientoAutomatico();
@@ -4965,6 +4970,295 @@ function verParticipantesNoTerminaron() {
     'que no completaron su formación.',
     ui.ButtonSet.OK
   );
+}
+
+// ====================================
+// INSTALACIÓN LIMPIA Y MIGRACIÓN DE DATOS
+// ====================================
+
+/**
+ * INSTALACIÓN LIMPIA: Crea un sistema nuevo desde cero
+ * Ideal para empezar con un archivo limpio y bien organizado
+ */
+function instalarSistemaLimpioNuevo() {
+  const ui = SpreadsheetApp.getUi();
+
+  const confirmacion = ui.alert(
+    '🆕 INSTALACIÓN LIMPIA - Sistema Nuevo',
+    '✨ Esta función creará un sistema COMPLETAMENTE NUEVO:\n\n' +
+    '✅ Archivo Google Sheets nuevo\n' +
+    '✅ Todas las hojas bien configuradas\n' +
+    '✅ Diseño profesional y limpio\n' +
+    '✅ Todas las funciones v2.9\n' +
+    '✅ Sin datos (empiezas desde cero)\n\n' +
+    '💡 IMPORTANTE:\n' +
+    '• Este archivo actual NO se modificará\n' +
+    '• Podrás importar datos después\n' +
+    '• Recibirás el link del archivo nuevo\n\n' +
+    '¿Crear nuevo archivo limpio?',
+    ui.ButtonSet.YES_NO
+  );
+
+  if (confirmacion !== ui.Button.YES) {
+    ui.alert('❌ Cancelado', 'Instalación cancelada.', ui.ButtonSet.OK);
+    return;
+  }
+
+  try {
+    ui.alert('🔨 Creando...', 'Creando nuevo sistema limpio. Espera 30-60 segundos...', ui.ButtonSet.OK);
+
+    const fecha = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd_HH-mm');
+    const nombreNuevo = 'Sistema Seguimiento IL v2.9 - ' + fecha;
+
+    // Crear nuevo Google Sheets
+    const nuevoSS = SpreadsheetApp.create(nombreNuevo);
+
+    // Guardar hoja por defecto para eliminar después
+    const hojaDefecto = nuevoSS.getSheets()[0];
+
+    // Crear todas las hojas
+    const nombresHojas = [
+      '📋 Seguimiento General',
+      '📞 Llamada 1',
+      '📞 Llamada 2',
+      '📞 Llamada 3',
+      '📞 Llamada 4',
+      '📞 Llamada 5',
+      '✅ Finalizados',
+      '❌ No Terminó la Formación'
+    ];
+
+    nombresHojas.forEach(function(nombre) {
+      const nuevaHoja = nuevoSS.insertSheet(nombre);
+      crearEstructuraHojaLimpia(nuevaHoja, nombre);
+    });
+
+    // Eliminar hoja por defecto
+    if (hojaDefecto) {
+      nuevoSS.deleteSheet(hojaDefecto);
+    }
+
+    const urlNuevo = nuevoSS.getUrl();
+
+    ui.alert(
+      '✅ ¡ARCHIVO NUEVO CREADO!',
+      '🎉 Sistema limpio creado exitosamente!\n\n' +
+      '🔗 URL del nuevo archivo:\n' + urlNuevo + '\n\n' +
+      '📋 PRÓXIMOS PASOS:\n' +
+      '1. COPIA TODO el código de este archivo\n' +
+      '   (Extensiones → Apps Script → Copiar)\n' +
+      '2. ABRE el nuevo archivo (link arriba)\n' +
+      '3. Extensiones → Apps Script\n' +
+      '4. PEGA el código completo\n' +
+      '5. Guarda (Ctrl+S) y refresca el archivo\n' +
+      '6. USA el menú: Importar Datos Desde Archivo Anterior\n\n' +
+      '💡 GUARDA ESTE LINK en un lugar seguro',
+      ui.ButtonSet.OK
+    );
+
+    console.log('✅ Archivo nuevo creado: ' + urlNuevo);
+
+  } catch (error) {
+    ui.alert('❌ Error', 'Error: ' + error.message, ui.ButtonSet.OK);
+    console.error('❌ Error:', error);
+  }
+}
+
+/**
+ * Crea la estructura base para una hoja limpia
+ */
+function crearEstructuraHojaLimpia(hoja, nombreHoja) {
+  // Encabezados estándar (18 columnas)
+  const encabezados = [
+    'ID',
+    'Nombre',
+    'Teléfono',
+    'Formación',
+    'Aliados',
+    'Plataformas',
+    'Conexión laboral',
+    'Por su cuenta',
+    'No busca trabajar',
+    'Empleado',
+    'No terminó formación',
+    'Etapa Actual',
+    'Resultados',
+    'Documentos',
+    'Fecha',
+    'Notas',
+    'Total Llamadas',
+    'Procesar'
+  ];
+
+  // Escribir encabezados
+  hoja.getRange(1, 1, 1, encabezados.length).setValues([encabezados]);
+
+  // Formato de encabezados
+  const rangoEnc = hoja.getRange(1, 1, 1, encabezados.length);
+  rangoEnc.setFontWeight('bold');
+  rangoEnc.setFontSize(11);
+  rangoEnc.setHorizontalAlignment('center');
+  rangoEnc.setVerticalAlignment('middle');
+  rangoEnc.setWrap(true);
+
+  // Colores según tipo de hoja
+  let colorFondo = '#4A90E2';
+  let colorTexto = '#FFFFFF';
+
+  if (nombreHoja.includes('Finalizados')) {
+    colorFondo = '#28A745';
+  } else if (nombreHoja.includes('No Terminó')) {
+    colorFondo = '#DC3545';
+  }
+
+  rangoEnc.setBackground(colorFondo);
+  rangoEnc.setFontColor(colorTexto);
+
+  // Congelar primera fila
+  hoja.setFrozenRows(1);
+
+  // Ajustar anchos de columnas
+  const anchos = [80, 200, 120, 180, 150, 150, 150, 150, 150, 150, 150, 120, 150, 120, 110, 250, 100, 80];
+  for (let i = 0; i < anchos.length; i++) {
+    hoja.setColumnWidth(i + 1, anchos[i]);
+  }
+
+  // Borde en encabezados
+  rangoEnc.setBorder(true, true, true, true, true, true, '#000000', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+}
+
+/**
+ * IMPORTAR DATOS desde archivo anterior al nuevo
+ */
+function importarDatosDesdeArchivoAnterior() {
+  const ui = SpreadsheetApp.getUi();
+
+  const respuesta = ui.prompt(
+    '📥 IMPORTAR Datos de Archivo Anterior',
+    '🔗 Pega la URL completa de tu archivo anterior:\n\n' +
+    '(El archivo que tiene todos tus datos)\n\n' +
+    'Ejemplo:\n' +
+    'https://docs.google.com/spreadsheets/d/ABC123...',
+    ui.ButtonSet.OK_CANCEL
+  );
+
+  if (respuesta.getSelectedButton() !== ui.Button.OK) {
+    ui.alert('❌ Cancelado', 'Importación cancelada.', ui.ButtonSet.OK);
+    return;
+  }
+
+  const urlAnterior = respuesta.getResponseText().trim();
+
+  if (!urlAnterior || urlAnterior === '') {
+    ui.alert('❌ Error', 'No ingresaste ninguna URL.', ui.ButtonSet.OK);
+    return;
+  }
+
+  try {
+    ui.alert('📥 Importando...', 'Importando datos. Esto puede tardar 30-60 segundos...', ui.ButtonSet.OK);
+
+    // Abrir archivo anterior
+    let ssAnterior;
+    try {
+      ssAnterior = SpreadsheetApp.openByUrl(urlAnterior);
+    } catch (e) {
+      ui.alert(
+        '❌ Error de Acceso',
+        'No se puede acceder al archivo.\n\n' +
+        'Verifica que:\n' +
+        '• La URL sea correcta\n' +
+        '• Tengas permisos de acceso al archivo\n' +
+        '• El archivo exista y no esté en la papelera',
+        ui.ButtonSet.OK
+      );
+      return;
+    }
+
+    const ssActual = SpreadsheetApp.getActiveSpreadsheet();
+
+    // Hojas a importar
+    const hojasImportar = [
+      '📋 Seguimiento General',
+      '📞 Llamada 1',
+      '📞 Llamada 2',
+      '📞 Llamada 3',
+      '📞 Llamada 4',
+      '📞 Llamada 5',
+      '✅ Finalizados',
+      '❌ No Terminó la Formación'
+    ];
+
+    let filasImportadas = 0;
+    let hojasOK = 0;
+
+    hojasImportar.forEach(function(nombreHoja) {
+      const hojaOrigen = ssAnterior.getSheetByName(nombreHoja);
+      const hojaDestino = ssActual.getSheetByName(nombreHoja);
+
+      if (!hojaOrigen) {
+        console.log('⚠️ Hoja no encontrada en archivo origen: ' + nombreHoja);
+        return;
+      }
+
+      if (!hojaDestino) {
+        console.log('⚠️ Hoja no encontrada en archivo destino: ' + nombreHoja);
+        return;
+      }
+
+      const ultimaFila = hojaOrigen.getLastRow();
+      const ultimaColumna = hojaOrigen.getLastColumn();
+
+      if (ultimaFila <= 1) {
+        console.log('ℹ️ Hoja vacía (sin datos): ' + nombreHoja);
+        return;
+      }
+
+      // Obtener datos (SIN encabezados, desde fila 2)
+      const datos = hojaOrigen.getRange(2, 1, ultimaFila - 1, ultimaColumna).getValues();
+
+      // Pegar datos en destino (desde fila 2)
+      if (datos.length > 0) {
+        hojaDestino.getRange(2, 1, datos.length, datos[0].length).setValues(datos);
+        filasImportadas += datos.length;
+        hojasOK++;
+        console.log('✅ Importado: ' + nombreHoja + ' (' + datos.length + ' filas)');
+      }
+    });
+
+    // Forzar actualización
+    SpreadsheetApp.flush();
+
+    // Aplicar colores y formatos
+    try {
+      aplicarSoloColoresFormacion();
+      console.log('✅ Colores aplicados');
+    } catch (e) {
+      console.log('⚠️ No se pudieron aplicar colores automáticamente: ' + e.message);
+    }
+
+    ui.alert(
+      '✅ ¡IMPORTACIÓN COMPLETADA!',
+      '🎉 Datos importados exitosamente!\n\n' +
+      '📊 Resumen:\n' +
+      '  • ' + hojasOK + ' hojas importadas\n' +
+      '  • ' + filasImportadas + ' filas totales\n\n' +
+      '✨ Sistema listo para usar\n\n' +
+      '💡 Recomendaciones:\n' +
+      '  1. Activar procesamiento automático\n' +
+      '  2. Verificar que todo se importó bien\n' +
+      '  3. Ejecutar: Aplicar Solo Colores Formación',
+      ui.ButtonSet.OK
+    );
+
+    console.log('═══════════════════════════════════');
+    console.log('✅ IMPORTACIÓN COMPLETADA');
+    console.log('📊 ' + hojasOK + ' hojas / ' + filasImportadas + ' filas');
+    console.log('═══════════════════════════════════');
+
+  } catch (error) {
+    ui.alert('❌ Error en Importación', 'Error: ' + error.message, ui.ButtonSet.OK);
+    console.error('❌ Error:', error);
+  }
 }
 
 // ====================================
