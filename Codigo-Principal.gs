@@ -1042,7 +1042,10 @@ function aplicarValidacionesNuevasFilas(hoja, filaInicio, cantidadFilas) {
     const opcionesFormacion = [
       'Barista I', 'Barista II', 'Barista III', 'Barista IV',
       'Barismo', 'Barismo 1', 'Barismo 2', 'Barismo 3', 'Barismo 4', 'Barismo 5',
+      'Barismo 6', 'Barismo 7', 'Barismo 8', 'Barismo 9', 'Barismo 10',
       'Gastronomía', 'Gastronomía I', 'Gastronomía II', 'Gastronomía III',
+      'Gastronomía IV', 'Gastronomía V',
+      'Gastronomía 1', 'Gastronomía 2', 'Gastronomía 3', 'Gastronomía 4', 'Gastronomía 5',
       'Panadería', 'Repostería', 'Sommelier', 'Food Manager',
       'Análisis de datos E-commerce', 'SAC', 'Ofimática',
       'Otra'
@@ -2073,7 +2076,12 @@ function configurarValidacionesCompletas(hoja) {
   try {
     const opcionesFormacion = [
       'Barista I', 'Barista II', 'Barista III', 'Barista IV',
-      'Barismo', 'Gastronomía', 'Food Manager',
+      'Barismo', 'Barismo 1', 'Barismo 2', 'Barismo 3', 'Barismo 4', 'Barismo 5',
+      'Barismo 6', 'Barismo 7', 'Barismo 8', 'Barismo 9', 'Barismo 10',
+      'Gastronomía', 'Gastronomía I', 'Gastronomía II', 'Gastronomía III',
+      'Gastronomía IV', 'Gastronomía V',
+      'Gastronomía 1', 'Gastronomía 2', 'Gastronomía 3', 'Gastronomía 4', 'Gastronomía 5',
+      'Panadería', 'Repostería', 'Sommelier', 'Food Manager',
       'Análisis de datos E-commerce', 'SAC', 'Ofimática',
       'Otra'
     ];
