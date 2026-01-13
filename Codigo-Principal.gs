@@ -53,7 +53,11 @@ function onOpen() {
     .addItem('⚡ ACTIVAR Procesamiento Automático', 'activarProcesomientoAutomatico')
     .addItem('🔴 DESACTIVAR Procesamiento Automático', 'desactivarProcesomientoAutomatico')
     .addSeparator()
-    .addSubMenu(ui.createMenu('📥 Importación')
+    .addSubMenu(ui.createMenu('📥 Importación y Exportación')
+      .addItem('📤 VER Resumen para Exportar', 'generarResumenParaExportacion')
+      .addSeparator()
+      .addItem('📥 IMPORTAR desde Archivo Anterior', 'importarDatosDesdeArchivoAnterior')
+      .addSeparator()
       .addItem('📥 Importar Datos 2024', 'importarDatos2024')
       .addItem('📥 Importar Datos 2025', 'importarDatos2025')
       .addItem('📥 Importar Desde Otra Hoja', 'importarDatosPersonalizados'))
@@ -3513,6 +3517,73 @@ function crearEstructuraHojaLimpia(hoja, nombreHoja) {
 
   // Borde en encabezados
   rangoEnc.setBorder(true, true, true, true, true, true, '#000000', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+}
+
+/**
+ * GENERAR RESUMEN para exportación
+ * Muestra cuántos datos hay en cada hoja y da instrucciones
+ */
+function generarResumenParaExportacion() {
+  const ui = SpreadsheetApp.getUi();
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  const hojasAnalizar = [
+    '📋 Seguimiento General',
+    '📞 Llamada 1',
+    '📞 Llamada 2',
+    '📞 Llamada 3',
+    '📞 Llamada 4',
+    '📞 Llamada 5',
+    '✅ Finalizados',
+    '❌ No Terminó la Formación'
+  ];
+
+  let resumen = '📊 RESUMEN DE DATOS EN ESTE ARCHIVO:\n\n';
+  let totalFilas = 0;
+
+  hojasAnalizar.forEach(function(nombreHoja) {
+    const hoja = ss.getSheetByName(nombreHoja);
+    if (hoja) {
+      const ultimaFila = hoja.getLastRow();
+      const filasDatos = Math.max(0, ultimaFila - 1); // -1 para no contar encabezado
+      resumen += nombreHoja + ': ' + filasDatos + ' registros\n';
+      totalFilas += filasDatos;
+    } else {
+      resumen += nombreHoja + ': ❌ No existe\n';
+    }
+  });
+
+  resumen += '\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+  resumen += '📈 TOTAL: ' + totalFilas + ' registros\n';
+  resumen += '━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+
+  resumen += '📤 PASOS PARA EXPORTAR A ARCHIVO NUEVO:\n\n';
+  resumen += '1️⃣ COPIAR URL de este archivo:\n';
+  resumen += '   • Haz click en "Compartir" (arriba derecha)\n';
+  resumen += '   • Click en "Copiar vínculo"\n';
+  resumen += '   • Guarda esa URL\n\n';
+
+  resumen += '2️⃣ CREAR archivo nuevo:\n';
+  resumen += '   • Abre un Google Sheet nuevo\n';
+  resumen += '   • Copia el código actualizado\n';
+  resumen += '   • Ve al menú: 🎓 Sistema de Seguimiento\n';
+  resumen += '   • Click: 🚀 INSTALAR TODO AUTOMÁTICO\n\n';
+
+  resumen += '3️⃣ IMPORTAR tus datos:\n';
+  resumen += '   • En el archivo NUEVO\n';
+  resumen += '   • Ve al menú: 📥 Importación y Exportación\n';
+  resumen += '   • Click: 📥 IMPORTAR desde Archivo Anterior\n';
+  resumen += '   • Pega la URL que copiaste en paso 1\n';
+  resumen += '   • ¡Espera 30-60 segundos!\n\n';
+
+  resumen += '✅ ¡Listo! Todos tus datos estarán en el archivo nuevo\n\n';
+
+  resumen += '📋 URL de ESTE archivo:\n';
+  resumen += ss.getUrl() + '\n\n';
+
+  resumen += '💡 TIP: Copia esta URL ahora ↑';
+
+  ui.alert('📤 RESUMEN PARA EXPORTACIÓN', resumen, ui.ButtonSet.OK);
 }
 
 /**
