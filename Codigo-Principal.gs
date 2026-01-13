@@ -69,12 +69,17 @@ function onOpen() {
     .addItem('🧪 Procesar Una Llamada (Prueba)', 'procesarUnaLlamadaPrueba')
     .addSeparator()
     .addSubMenu(ui.createMenu('📊 Reportes y Análisis')
-      .addItem('📈 Generar Reporte Completo', 'generarReporte')
+      .addItem('📊 GENERAR Reporte Profesional con Cuadros', 'generarReporteProfesionalConCuadros')
+      .addSeparator()
+      .addItem('📈 Generar Reporte Simple', 'generarReporte')
+      .addSeparator()
       .addItem('🔍 Diagnosticar Sistema', 'diagnosticarSistema')
       .addItem('🔍 Diagnosticar Doble Procesamiento', 'diagnosticarDobleProcesamiento')
       .addItem('🔍 Verificar Checkboxes', 'verificarCheckboxes'))
     .addSeparator()
     .addSubMenu(ui.createMenu('🛠️ Mantenimiento')
+      .addItem('🧹 LIMPIAR Y ORGANIZAR TODO', 'limpiarYOrganizarTodo')
+      .addSeparator()
       .addItem('🔄 REINSTALAR Sistema (Sin Perder Datos)', 'reinstalarSistemaSeguro')
       .addSeparator()
       .addItem('💾 Crear Respaldo Completo v2.9', 'crearRespaldoCompleto')
@@ -5257,6 +5262,405 @@ function importarDatosDesdeArchivoAnterior() {
 
   } catch (error) {
     ui.alert('❌ Error en Importación', 'Error: ' + error.message, ui.ButtonSet.OK);
+    console.error('❌ Error:', error);
+  }
+}
+
+// ====================================
+// REPORTES PROFESIONALES CON CUADROS Y TABLAS
+// ====================================
+
+/**
+ * Genera un reporte profesional con cuadros y tablas visuales
+ * Crea una hoja completa con estadísticas organizadas
+ */
+function generarReporteProfesionalConCuadros() {
+  const ui = SpreadsheetApp.getUi();
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  try {
+    ui.alert('📊 Generando Reporte...', 'Creando reporte profesional. Espera...', ui.ButtonSet.OK);
+
+    // Obtener o crear hoja de reportes
+    let hojaReporte = ss.getSheetByName('📊 REPORTES');
+    if (!hojaReporte) {
+      hojaReporte = ss.insertSheet('📊 REPORTES');
+    } else {
+      hojaReporte.clear();
+    }
+
+    // ============================================
+    // RECOPILAR DATOS
+    // ============================================
+    const hojaGen = ss.getSheetByName('📋 Seguimiento General');
+    const hojaFin = ss.getSheetByName('✅ Finalizados');
+    const hojaNoTermino = ss.getSheetByName('❌ No Terminó la Formación');
+
+    const totalParticipantes = hojaGen ? Math.max(0, hojaGen.getLastRow() - 1) : 0;
+    const totalFinalizados = hojaFin ? Math.max(0, hojaFin.getLastRow() - 1) : 0;
+    const totalNoTerminaron = hojaNoTermino ? Math.max(0, hojaNoTermino.getLastRow() - 1) : 0;
+
+    let enProceso = 0;
+    for (let i = 1; i <= 5; i++) {
+      const hojaLlamada = ss.getSheetByName('📞 Llamada ' + i);
+      if (hojaLlamada) {
+        enProceso += Math.max(0, hojaLlamada.getLastRow() - 1);
+      }
+    }
+
+    // Estadísticas por formación
+    const estadisticasFormacion = {};
+    if (hojaGen && totalParticipantes > 0) {
+      const datosFormacion = hojaGen.getRange(2, COLUMNAS.FORMACION, totalParticipantes, 1).getValues();
+      datosFormacion.forEach(function(fila) {
+        const formacion = fila[0];
+        if (formacion) {
+          estadisticasFormacion[formacion] = (estadisticasFormacion[formacion] || 0) + 1;
+        }
+      });
+    }
+
+    // ============================================
+    // CREAR DISEÑO DEL REPORTE
+    // ============================================
+    let fila = 1;
+
+    // TÍTULO PRINCIPAL
+    hojaReporte.getRange(fila, 1, 1, 6).merge();
+    const titulo = hojaReporte.getRange(fila, 1);
+    titulo.setValue('📊 REPORTE COMPLETO DEL SISTEMA v2.9');
+    titulo.setBackground('#1a237e');
+    titulo.setFontColor('#FFFFFF');
+    titulo.setFontWeight('bold');
+    titulo.setFontSize(16);
+    titulo.setHorizontalAlignment('center');
+    titulo.setVerticalAlignment('middle');
+    hojaReporte.setRowHeight(fila, 50);
+    fila += 2;
+
+    // FECHA Y HORA
+    hojaReporte.getRange(fila, 1).setValue('📅 Generado:');
+    hojaReporte.getRange(fila, 2).setValue(new Date());
+    hojaReporte.getRange(fila, 1).setFontWeight('bold');
+    hojaReporte.getRange(fila, 2).setNumberFormat('dd/mm/yyyy hh:mm');
+    fila += 2;
+
+    // ============================================
+    // CUADRO 1: RESUMEN GENERAL
+    // ============================================
+    crearCuadroReporte(hojaReporte, fila, '📈 RESUMEN GENERAL');
+    fila++;
+
+    const datosResumen = [
+      ['👥 Total Participantes', totalParticipantes, '#E3F2FD'],
+      ['📞 En Proceso', enProceso, '#FFF9C4'],
+      ['✅ Finalizados', totalFinalizados, '#C8E6C9'],
+      ['❌ No Terminaron', totalNoTerminaron, '#FFCDD2'],
+      ['', '', ''],
+      ['📊 Tasa de Finalización', totalParticipantes > 0 ? Math.round((totalFinalizados / totalParticipantes) * 100) + '%' : '0%', '#E1BEE7']
+    ];
+
+    datosResumen.forEach(function(datos) {
+      if (datos[0]) {
+        hojaReporte.getRange(fila, 1).setValue(datos[0]);
+        hojaReporte.getRange(fila, 2).setValue(datos[1]);
+        hojaReporte.getRange(fila, 1, 1, 2).setBackground(datos[2]);
+        hojaReporte.getRange(fila, 1).setFontWeight('bold');
+        hojaReporte.getRange(fila, 2).setHorizontalAlignment('center');
+        hojaReporte.getRange(fila, 2).setFontWeight('bold');
+      }
+      fila++;
+    });
+    fila++;
+
+    // ============================================
+    // CUADRO 2: ESTADÍSTICAS POR FORMACIÓN
+    // ============================================
+    if (Object.keys(estadisticasFormacion).length > 0) {
+      crearCuadroReporte(hojaReporte, fila, '🎓 ESTADÍSTICAS POR FORMACIÓN');
+      fila++;
+
+      const coloresFormacion = {
+        'Cuidado Infantil': '#E3F2FD',
+        'Desarrollo de Aplicaciones': '#F3E5F5',
+        'Comunicación Asertiva': '#FFF9C4',
+        'Atención al Cliente': '#FFE0B2',
+        'Excel': '#C8E6C9'
+      };
+
+      Object.keys(estadisticasFormacion).forEach(function(formacion) {
+        const total = estadisticasFormacion[formacion];
+        const porcentaje = totalParticipantes > 0 ? Math.round((total / totalParticipantes) * 100) : 0;
+
+        hojaReporte.getRange(fila, 1).setValue(formacion);
+        hojaReporte.getRange(fila, 2).setValue(total);
+        hojaReporte.getRange(fila, 3).setValue(porcentaje + '%');
+
+        const color = coloresFormacion[formacion] || '#F5F5F5';
+        hojaReporte.getRange(fila, 1, 1, 3).setBackground(color);
+        hojaReporte.getRange(fila, 1).setFontWeight('bold');
+        hojaReporte.getRange(fila, 2, 1, 2).setHorizontalAlignment('center');
+
+        fila++;
+      });
+      fila++;
+    }
+
+    // ============================================
+    // CUADRO 3: DISTRIBUCIÓN POR ETAPAS
+    // ============================================
+    crearCuadroReporte(hojaReporte, fila, '📞 DISTRIBUCIÓN POR LLAMADAS');
+    fila++;
+
+    for (let i = 1; i <= 5; i++) {
+      const hojaLlamada = ss.getSheetByName('📞 Llamada ' + i);
+      const totalLlamada = hojaLlamada ? Math.max(0, hojaLlamada.getLastRow() - 1) : 0;
+
+      hojaReporte.getRange(fila, 1).setValue('Llamada ' + i);
+      hojaReporte.getRange(fila, 2).setValue(totalLlamada);
+      hojaReporte.getRange(fila, 1, 1, 2).setBackground('#FFF3E0');
+      hojaReporte.getRange(fila, 1).setFontWeight('bold');
+      hojaReporte.getRange(fila, 2).setHorizontalAlignment('center');
+
+      fila++;
+    }
+    fila += 2;
+
+    // ============================================
+    // PIE DE PÁGINA
+    // ============================================
+    hojaReporte.getRange(fila, 1, 1, 6).merge();
+    const pie = hojaReporte.getRange(fila, 1);
+    pie.setValue('✅ Sistema de Seguimiento IL v2.9 - Reporte generado automáticamente');
+    pie.setBackground('#37474f');
+    pie.setFontColor('#FFFFFF');
+    pie.setFontSize(10);
+    pie.setHorizontalAlignment('center');
+    pie.setVerticalAlignment('middle');
+    hojaReporte.setRowHeight(fila, 40);
+
+    // ============================================
+    // FORMATEAR COLUMNAS
+    // ============================================
+    hojaReporte.setColumnWidth(1, 300);
+    hojaReporte.setColumnWidth(2, 120);
+    hojaReporte.setColumnWidth(3, 100);
+    hojaReporte.setFrozenRows(1);
+
+    // Activar hoja de reporte
+    ss.setActiveSheet(hojaReporte);
+
+    ui.alert(
+      '✅ ¡Reporte Generado!',
+      '📊 Reporte profesional creado en la hoja "📊 REPORTES"\n\n' +
+      '✨ Incluye:\n' +
+      '  • Resumen general con estadísticas\n' +
+      '  • Cuadros por formación\n' +
+      '  • Distribución por llamadas\n' +
+      '  • Diseño profesional con colores\n\n' +
+      '👁️ La hoja se abrió automáticamente',
+      ui.ButtonSet.OK
+    );
+
+    console.log('✅ Reporte profesional generado');
+
+  } catch (error) {
+    ui.alert('❌ Error', 'Error generando reporte: ' + error.message, ui.ButtonSet.OK);
+    console.error('❌ Error:', error);
+  }
+}
+
+/**
+ * Crea un cuadro de título para el reporte
+ */
+function crearCuadroReporte(hoja, fila, titulo) {
+  hoja.getRange(fila, 1, 1, 3).merge();
+  const rango = hoja.getRange(fila, 1);
+  rango.setValue(titulo);
+  rango.setBackground('#424242');
+  rango.setFontColor('#FFFFFF');
+  rango.setFontWeight('bold');
+  rango.setFontSize(12);
+  rango.setHorizontalAlignment('center');
+  rango.setVerticalAlignment('middle');
+  hoja.setRowHeight(fila, 35);
+  rango.setBorder(true, true, true, true, null, null, '#000000', SpreadsheetApp.BorderStyle.SOLID_THICK);
+}
+
+// ====================================
+// LIMPIEZA Y ORGANIZACIÓN COMPLETA
+// ====================================
+
+/**
+ * LIMPIA Y ORGANIZA TODO EL SISTEMA AUTOMÁTICAMENTE
+ * - Limpia colores innecesarios
+ * - Elimina datos vacíos
+ * - Organiza estructura
+ * - Aplica solo colores por formación
+ * - Optimiza todo
+ */
+function limpiarYOrganizarTodo() {
+  const ui = SpreadsheetApp.getUi();
+
+  const confirmacion = ui.alert(
+    '🧹 LIMPIAR Y ORGANIZAR TODO',
+    '✨ Esta función hará una limpieza completa:\n\n' +
+    '✅ Limpiar colores innecesarios\n' +
+    '✅ Eliminar filas vacías\n' +
+    '✅ Organizar estructura\n' +
+    '✅ Aplicar solo colores por formación\n' +
+    '✅ Optimizar formatos\n' +
+    '✅ Limpiar datos que no sirven\n\n' +
+    '⏱️ Puede tardar 1-2 minutos\n\n' +
+    '¿Continuar con la limpieza completa?',
+    ui.ButtonSet.YES_NO
+  );
+
+  if (confirmacion !== ui.Button.YES) {
+    ui.alert('❌ Cancelado', 'Limpieza cancelada.', ui.ButtonSet.OK);
+    return;
+  }
+
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    // ============================================
+    // PASO 1: LIMPIAR FILAS VACÍAS
+    // ============================================
+    ui.alert('📋 PASO 1/5', 'Eliminando filas vacías...', ui.ButtonSet.OK);
+
+    const hojas = [
+      '📋 Seguimiento General',
+      '📞 Llamada 1', '📞 Llamada 2', '📞 Llamada 3',
+      '📞 Llamada 4', '📞 Llamada 5',
+      '✅ Finalizados',
+      '❌ No Terminó la Formación'
+    ];
+
+    let filasEliminadas = 0;
+
+    hojas.forEach(function(nombreHoja) {
+      const hoja = ss.getSheetByName(nombreHoja);
+      if (!hoja) return;
+
+      const ultimaFila = hoja.getLastRow();
+      if (ultimaFila <= 1) return;
+
+      // Eliminar de abajo hacia arriba
+      for (let i = ultimaFila; i >= 2; i--) {
+        const fila = hoja.getRange(i, 1, 1, 4).getValues()[0];
+        const estaVacia = fila.every(function(celda) { return !celda || celda === ''; });
+
+        if (estaVacia) {
+          hoja.deleteRow(i);
+          filasEliminadas++;
+        }
+      }
+    });
+
+    console.log('🗑️ Eliminadas ' + filasEliminadas + ' filas vacías');
+
+    // ============================================
+    // PASO 2: LIMPIAR TODOS LOS COLORES
+    // ============================================
+    ui.alert('📋 PASO 2/5', 'Limpiando colores innecesarios...', ui.ButtonSet.OK);
+
+    hojas.forEach(function(nombreHoja) {
+      const hoja = ss.getSheetByName(nombreHoja);
+      if (!hoja) return;
+
+      const ultimaFila = hoja.getLastRow();
+      if (ultimaFila <= 1) return;
+
+      // Limpiar todos los colores de datos (excepto encabezados)
+      const rangoDatos = hoja.getRange(2, 1, ultimaFila - 1, hoja.getLastColumn());
+      rangoDatos.setBackground(null);
+      rangoDatos.setFontColor('#000000');
+    });
+
+    console.log('🎨 Colores limpiados');
+
+    // ============================================
+    // PASO 3: APLICAR SOLO COLORES POR FORMACIÓN
+    // ============================================
+    ui.alert('📋 PASO 3/5', 'Aplicando colores por formación...', ui.ButtonSet.OK);
+
+    aplicarSoloColoresFormacion();
+
+    console.log('✅ Colores por formación aplicados');
+
+    // ============================================
+    // PASO 4: OPTIMIZAR ANCHOS DE COLUMNAS
+    // ============================================
+    ui.alert('📋 PASO 4/5', 'Optimizando estructura...', ui.ButtonSet.OK);
+
+    const anchosOptimos = [80, 200, 120, 180, 150, 150, 150, 150, 150, 150, 150, 120, 150, 120, 110, 250, 100, 80];
+
+    hojas.forEach(function(nombreHoja) {
+      const hoja = ss.getSheetByName(nombreHoja);
+      if (!hoja) return;
+
+      for (let i = 0; i < anchosOptimos.length; i++) {
+        try {
+          hoja.setColumnWidth(i + 1, anchosOptimos[i]);
+        } catch (e) {
+          // Ignorar si falla
+        }
+      }
+
+      // Congelar primera fila
+      hoja.setFrozenRows(1);
+    });
+
+    console.log('📐 Estructura optimizada');
+
+    // ============================================
+    // PASO 5: LIMPIAR FORMATOS INNECESARIOS
+    // ============================================
+    ui.alert('📋 PASO 5/5', 'Limpiando formatos innecesarios...', ui.ButtonSet.OK);
+
+    hojas.forEach(function(nombreHoja) {
+      const hoja = ss.getSheetByName(nombreHoja);
+      if (!hoja) return;
+
+      const ultimaFila = hoja.getLastRow();
+      if (ultimaFila <= 1) return;
+
+      // Restablecer formato de texto estándar
+      const rangoDatos = hoja.getRange(2, 1, ultimaFila - 1, hoja.getLastColumn());
+      rangoDatos.setFontSize(10);
+      rangoDatos.setFontFamily('Arial');
+      rangoDatos.setVerticalAlignment('top');
+      rangoDatos.setWrap(true);
+    });
+
+    console.log('✨ Formatos optimizados');
+
+    // ============================================
+    // FINALIZACIÓN
+    // ============================================
+    SpreadsheetApp.flush();
+
+    ui.alert(
+      '✅ ¡LIMPIEZA COMPLETADA!',
+      '🎉 Sistema completamente limpio y organizado!\n\n' +
+      '✨ Acciones realizadas:\n' +
+      '  • ' + filasEliminadas + ' filas vacías eliminadas\n' +
+      '  • Colores innecesarios removidos\n' +
+      '  • Solo colores por formación aplicados\n' +
+      '  • Estructura optimizada\n' +
+      '  • Formatos estandarizados\n\n' +
+      '🎯 TODO está limpio y organizado\n\n' +
+      '💡 Tu sistema se ve profesional ahora',
+      ui.ButtonSet.OK
+    );
+
+    console.log('═══════════════════════════════════');
+    console.log('✅ LIMPIEZA COMPLETA FINALIZADA');
+    console.log('═══════════════════════════════════');
+
+  } catch (error) {
+    ui.alert('❌ Error', 'Error en limpieza: ' + error.message, ui.ButtonSet.OK);
     console.error('❌ Error:', error);
   }
 }
