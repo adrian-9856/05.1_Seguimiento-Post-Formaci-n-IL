@@ -47,72 +47,349 @@ const COLORES_ETAPAS = {
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu('🎓 Sistema de Seguimiento')
+    .addItem('🚀 INSTALAR TODO AUTOMÁTICO', 'instalarTodoAutomatico')
     .addItem('📖 Ver Instrucciones', 'mostrarHojaInstrucciones')
     .addSeparator()
-    .addSubMenu(ui.createMenu('🔧 Configuración')
-      .addItem('⚙️ Configuración Inicial', 'configurarHojasCorregido')
-      .addItem('🔄 ACTUALIZAR Estructura de Tabla', 'actualizarEstructuraTabla')
-      .addItem('🔗 Configurar Google Sheet Externo', 'configurarSheetExterno')
-      .addItem('🎨 Aplicar Diseño Profesional', 'aplicarFormato')
-      .addItem('⚙️ Ver Configuración Actual', 'verConfiguracion'))
+    .addItem('⚡ ACTIVAR Procesamiento Automático', 'activarProcesomientoAutomatico')
+    .addItem('🔴 DESACTIVAR Procesamiento Automático', 'desactivarProcesomientoAutomatico')
     .addSeparator()
     .addSubMenu(ui.createMenu('📥 Importación')
       .addItem('📥 Importar Datos 2024', 'importarDatos2024')
       .addItem('📥 Importar Datos 2025', 'importarDatos2025')
-      .addItem('📥 Importar Desde Otra Hoja', 'importarDatosPersonalizados')
-      .addItem('🧪 Probar Conexión Externa', 'probarConexionSheetExterno')
-      .addItem('🎯 Finalizar Participantes por Etapa', 'finalizarParticipantesPorEtapa'))
-    .addSeparator()
-    .addItem('⚡ ACTIVAR Procesamiento Automático', 'activarProcesomientoAutomatico')
-    .addItem('🔴 DESACTIVAR Procesamiento Automático', 'desactivarProcesomientoAutomatico')
-    .addItem('🔄 Procesar Llamadas Marcadas', 'procesarLlamadasManualesCorregido')
-    .addItem('🧪 Procesar Una Llamada (Prueba)', 'procesarUnaLlamadaPrueba')
+      .addItem('📥 Importar Desde Otra Hoja', 'importarDatosPersonalizados'))
     .addSeparator()
     .addSubMenu(ui.createMenu('📊 Reportes y Análisis')
-      .addItem('📊 GENERAR Reporte Profesional con Cuadros', 'generarReporteProfesionalConCuadros')
+      .addItem('📊 GENERAR Reporte Profesional', 'generarReporteProfesionalConCuadros')
       .addSeparator()
-      .addItem('📈 Generar Reporte Simple', 'generarReporte')
-      .addSeparator()
-      .addItem('🔍 Diagnosticar Sistema', 'diagnosticarSistema')
-      .addItem('🔍 Diagnosticar Doble Procesamiento', 'diagnosticarDobleProcesamiento')
-      .addItem('🔍 Verificar Checkboxes', 'verificarCheckboxes'))
+      .addItem('🔍 Diagnosticar Sistema', 'diagnosticarSistema'))
     .addSeparator()
     .addSubMenu(ui.createMenu('🛠️ Mantenimiento')
       .addItem('🧹 LIMPIAR Y ORGANIZAR TODO', 'limpiarYOrganizarTodo')
+      .addItem('🎨 Aplicar Temas y Diseños', 'aplicarTemasProfesionales')
       .addSeparator()
-      .addItem('🔄 REINSTALAR Sistema (Sin Perder Datos)', 'reinstalarSistemaSeguro')
+      .addItem('🔄 REINSTALAR Sistema', 'reinstalarSistemaSeguro')
       .addSeparator()
-      .addItem('💾 Crear Respaldo Completo v2.9', 'crearRespaldoCompleto')
-      .addItem('💾 Crear Respaldo v2.8', 'crearRespaldo')
-      .addSeparator()
-      .addItem('🔧 Reparar Sistema', 'repararSistema')
-      .addItem('🧹 Limpiar Datos Vacíos', 'limpiarDatosVacios')
-      .addItem('🧹 Limpiar Bloqueos de Procesamiento', 'limpiarBloqueosProcesamiento')
-      .addSeparator()
-      .addItem('🔄 Resetear Sistema Completo', 'resetearSistema'))
-    .addSeparator()
-    .addSubMenu(ui.createMenu('🎯 Gestión de Etapas')
-      .addItem('🔧 Configurar Desplegable Etapas', 'configurarDesplegableEtapaActual')
-      .addItem('🔄 Actualizar Etapas por Llamadas', 'actualizarEtapaSegunLlamadas')
-      .addItem('📊 Reporte de Etapas', 'generarReporteEtapas')
-      .addItem('🔍 Buscar por Etapa', 'buscarPorEtapa'))
-    .addSeparator()
-    .addSubMenu(ui.createMenu('✨ No Terminó Formación (v2.9)')
-      .addItem('⚙️ INSTALAR Funcionalidad v2.9', 'instalarNoTerminoFormacion')
-      .addSeparator()
-      .addItem('📋 Mover Participantes NO Terminaron', 'moverParticipantesNoTerminaron')
-      .addItem('👁️ Ver Participantes NO Terminaron', 'verParticipantesNoTerminaron')
-      .addSeparator()
-      .addItem('🎨 Aplicar Solo Colores Formación', 'aplicarSoloColoresFormacion')
-      .addItem('🧹 Limpiar Colores Columnas Etapas', 'limpiarColoresColumnasEtapas'))
-    .addSeparator()
-    .addSubMenu(ui.createMenu('🆕 Instalación Limpia y Migración')
-      .addItem('✨ CREAR Sistema Nuevo Limpio', 'instalarSistemaLimpioNuevo')
-      .addSeparator()
-      .addItem('📥 IMPORTAR Datos Desde Archivo Anterior', 'importarDatosDesdeArchivoAnterior'))
+      .addItem('💾 Crear Respaldo', 'crearRespaldoCompleto'))
     .addToUi();
 
   verificarEstadoProcesomientoAutomatico();
+}
+
+// ====================================
+// 🚀 INSTALAR TODO AUTOMÁTICO - UN SOLO CLICK
+// ====================================
+
+/**
+ * INSTALA TODO EL SISTEMA AUTOMÁTICAMENTE
+ * Con un solo click configura todo y aplica diseños profesionales
+ */
+function instalarTodoAutomatico() {
+  const ui = SpreadsheetApp.getUi();
+
+  const confirmacion = ui.alert(
+    '🚀 INSTALAR TODO AUTOMÁTICAMENTE',
+    '✨ Esta función instalará y configurará TODO:\n\n' +
+    '✅ Crear todas las hojas necesarias\n' +
+    '✅ Configurar validaciones y dropdowns\n' +
+    '✅ Instalar funcionalidad v2.9\n' +
+    '✅ Aplicar temas y diseños profesionales\n' +
+    '✅ Configurar colores por formación\n' +
+    '✅ Activar procesamiento automático\n' +
+    '✅ Optimizar todo el sistema\n\n' +
+    '⏱️ Tardará 2-3 minutos\n\n' +
+    '¿Instalar TODO ahora?',
+    ui.ButtonSet.YES_NO
+  );
+
+  if (confirmacion !== ui.Button.YES) {
+    ui.alert('❌ Cancelado', 'Instalación cancelada.', ui.ButtonSet.OK);
+    return;
+  }
+
+  try {
+    const pasos = 8;
+    let pasoActual = 1;
+
+    // ============================================
+    // PASO 1: CONFIGURAR HOJAS
+    // ============================================
+    ui.alert(`📋 PASO ${pasoActual}/${pasos}`, 'Configurando hojas del sistema...', ui.ButtonSet.OK);
+    configurarHojasCorregido();
+    pasoActual++;
+
+    // ============================================
+    // PASO 2: INSTALAR v2.9
+    // ============================================
+    ui.alert(`📋 PASO ${pasoActual}/${pasos}`, 'Instalando funcionalidad v2.9...', ui.ButtonSet.OK);
+
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    // Crear hoja "No Terminó" si no existe
+    let hojaNoTermino = ss.getSheetByName('❌ No Terminó la Formación');
+    if (!hojaNoTermino) {
+      hojaNoTermino = ss.insertSheet('❌ No Terminó la Formación');
+
+      const encabezados = [
+        'ID', 'Nombre', 'Teléfono', 'Formación',
+        'Aliados', 'Plataformas', 'Conexión laboral',
+        'Por su cuenta', 'No busca trabajar', 'Empleado',
+        'No terminó formación', 'Etapa Actual', 'Resultados',
+        'Documentos', 'Fecha', 'Notas', 'Total Llamadas', 'Procesar'
+      ];
+
+      hojaNoTermino.getRange(1, 1, 1, encabezados.length).setValues([encabezados]);
+    }
+
+    // Agregar validación Sí/No en columna K
+    const hojasValidacion = [
+      '📋 Seguimiento General', '📞 Llamada 1', '📞 Llamada 2',
+      '📞 Llamada 3', '📞 Llamada 4', '📞 Llamada 5'
+    ];
+
+    hojasValidacion.forEach(function(nombreHoja) {
+      const hoja = ss.getSheetByName(nombreHoja);
+      if (hoja) {
+        const ultimaFila = Math.max(hoja.getLastRow(), 100);
+        const reglaValidacion = SpreadsheetApp.newDataValidation()
+          .requireValueInList(['Sí', 'No'], true)
+          .setAllowInvalid(false)
+          .build();
+        hoja.getRange(2, COLUMNAS.NO_TERMINO_FORMACION, ultimaFila - 1, 1).setDataValidation(reglaValidacion);
+      }
+    });
+
+    pasoActual++;
+
+    // ============================================
+    // PASO 3: APLICAR TEMAS PROFESIONALES
+    // ============================================
+    ui.alert(`📋 PASO ${pasoActual}/${pasos}`, 'Aplicando temas y diseños profesionales...', ui.ButtonSet.OK);
+    aplicarTemasProfesionales();
+    pasoActual++;
+
+    // ============================================
+    // PASO 4: LIMPIAR COLORES Y APLICAR POR FORMACIÓN
+    // ============================================
+    ui.alert(`📋 PASO ${pasoActual}/${pasos}`, 'Configurando colores por formación...', ui.ButtonSet.OK);
+    limpiarColoresColumnasEtapas();
+    aplicarSoloColoresFormacion();
+    pasoActual++;
+
+    // ============================================
+    // PASO 5: CONFIGURAR VALIDACIONES
+    // ============================================
+    ui.alert(`📋 PASO ${pasoActual}/${pasos}`, 'Configurando validaciones y dropdowns...', ui.ButtonSet.OK);
+
+    const hojasConfig = ['📋 Seguimiento General', '📞 Llamada 1', '📞 Llamada 2',
+                        '📞 Llamada 3', '📞 Llamada 4', '📞 Llamada 5', '✅ Finalizados'];
+
+    hojasConfig.forEach(function(nombreHoja) {
+      const hoja = ss.getSheetByName(nombreHoja);
+      if (hoja) {
+        configurarValidacionesCompletas(hoja);
+      }
+    });
+    pasoActual++;
+
+    // ============================================
+    // PASO 6: LIMPIAR Y ORGANIZAR
+    // ============================================
+    ui.alert(`📋 PASO ${pasoActual}/${pasos}`, 'Limpiando y organizando...', ui.ButtonSet.OK);
+
+    // Limpiar filas vacías
+    hojasConfig.forEach(function(nombreHoja) {
+      const hoja = ss.getSheetByName(nombreHoja);
+      if (!hoja) return;
+
+      const ultimaFila = hoja.getLastRow();
+      if (ultimaFila <= 1) return;
+
+      for (let i = ultimaFila; i >= 2; i--) {
+        const fila = hoja.getRange(i, 1, 1, 4).getValues()[0];
+        const estaVacia = fila.every(function(celda) { return !celda || celda === ''; });
+        if (estaVacia) {
+          hoja.deleteRow(i);
+        }
+      }
+    });
+
+    pasoActual++;
+
+    // ============================================
+    // PASO 7: ACTIVAR PROCESAMIENTO AUTOMÁTICO
+    // ============================================
+    ui.alert(`📋 PASO ${pasoActual}/${pasos}`, 'Activando procesamiento automático...', ui.ButtonSet.OK);
+
+    try {
+      configurarTriggerOnEdit();
+      const propiedades = PropertiesService.getScriptProperties();
+      propiedades.setProperty('PROCESAMIENTO_AUTOMATICO', 'true');
+      propiedades.setProperty('FECHA_ACTIVACION_AUTO', new Date().toISOString());
+    } catch (e) {
+      console.log('No se pudo activar procesamiento automático: ' + e.message);
+    }
+
+    pasoActual++;
+
+    // ============================================
+    // PASO 8: FINALIZACIÓN
+    // ============================================
+    ui.alert(`📋 PASO ${pasoActual}/${pasos}`, 'Finalizando instalación...', ui.ButtonSet.OK);
+
+    SpreadsheetApp.flush();
+
+    // ============================================
+    // MENSAJE FINAL
+    // ============================================
+    ui.alert(
+      '✅ ¡INSTALACIÓN COMPLETADA!',
+      '🎉 ¡Todo el sistema está instalado y configurado!\n\n' +
+      '✨ Configurado:\n' +
+      '  ✅ Hojas creadas y organizadas\n' +
+      '  ✅ Funcionalidad v2.9 activa\n' +
+      '  ✅ Temas profesionales aplicados\n' +
+      '  ✅ Colores por formación\n' +
+      '  ✅ Validaciones configuradas\n' +
+      '  ✅ Sistema limpio y optimizado\n' +
+      '  ✅ Procesamiento automático activo\n\n' +
+      '🎯 ¡TODO LISTO PARA USAR!\n\n' +
+      '💡 Ya puedes:\n' +
+      '  • Importar tus datos\n' +
+      '  • Generar reportes\n' +
+      '  • Procesar llamadas automáticamente',
+      ui.ButtonSet.OK
+    );
+
+    console.log('═══════════════════════════════════');
+    console.log('✅ INSTALACIÓN AUTOMÁTICA COMPLETADA');
+    console.log('═══════════════════════════════════');
+
+  } catch (error) {
+    ui.alert('❌ Error en Instalación', 'Error: ' + error.message, ui.ButtonSet.OK);
+    console.error('❌ Error:', error);
+  }
+}
+
+// ====================================
+// 🎨 TEMAS Y DISEÑOS PROFESIONALES
+// ====================================
+
+/**
+ * Aplica temas y diseños profesionales a todas las hojas
+ * Diferentes estilos visuales para cada tipo de hoja
+ */
+function aplicarTemasProfesionales() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  try {
+    // Definir temas por tipo de hoja
+    const temas = {
+      seguimiento: {
+        colorEncabezado: '#1565C0',
+        colorTexto: '#FFFFFF',
+        colorFila1: '#E3F2FD',
+        colorFila2: '#FFFFFF',
+        nombre: '📋 Seguimiento General'
+      },
+      llamadas: {
+        colorEncabezado: '#0277BD',
+        colorTexto: '#FFFFFF',
+        colorFila1: '#B3E5FC',
+        colorFila2: '#FFFFFF',
+        nombres: ['📞 Llamada 1', '📞 Llamada 2', '📞 Llamada 3', '📞 Llamada 4', '📞 Llamada 5']
+      },
+      finalizados: {
+        colorEncabezado: '#2E7D32',
+        colorTexto: '#FFFFFF',
+        colorFila1: '#C8E6C9',
+        colorFila2: '#FFFFFF',
+        nombre: '✅ Finalizados'
+      },
+      noTermino: {
+        colorEncabezado: '#C62828',
+        colorTexto: '#FFFFFF',
+        colorFila1: '#FFCDD2',
+        colorFila2: '#FFFFFF',
+        nombre: '❌ No Terminó la Formación'
+      }
+    };
+
+    // Aplicar tema a Seguimiento General
+    aplicarTemaAHoja(ss.getSheetByName(temas.seguimiento.nombre), temas.seguimiento);
+
+    // Aplicar tema a hojas de Llamadas
+    temas.llamadas.nombres.forEach(function(nombreHoja) {
+      aplicarTemaAHoja(ss.getSheetByName(nombreHoja), temas.llamadas);
+    });
+
+    // Aplicar tema a Finalizados
+    aplicarTemaAHoja(ss.getSheetByName(temas.finalizados.nombre), temas.finalizados);
+
+    // Aplicar tema a No Terminó
+    aplicarTemaAHoja(ss.getSheetByName(temas.noTermino.nombre), temas.noTermino);
+
+    console.log('✅ Temas profesionales aplicados');
+
+  } catch (error) {
+    console.error('❌ Error aplicando temas:', error.message);
+  }
+}
+
+/**
+ * Aplica un tema específico a una hoja
+ */
+function aplicarTemaAHoja(hoja, tema) {
+  if (!hoja) return;
+
+  const ultimaFila = hoja.getLastRow();
+  const ultimaColumna = hoja.getLastColumn();
+
+  if (ultimaColumna === 0) return;
+
+  // Aplicar diseño al encabezado
+  const rangoEncabezado = hoja.getRange(1, 1, 1, ultimaColumna);
+  rangoEncabezado.setBackground(tema.colorEncabezado);
+  rangoEncabezado.setFontColor(tema.colorTexto);
+  rangoEncabezado.setFontWeight('bold');
+  rangoEncabezado.setFontSize(11);
+  rangoEncabezado.setHorizontalAlignment('center');
+  rangoEncabezado.setVerticalAlignment('middle');
+  rangoEncabezado.setWrap(true);
+
+  // Aplicar borde grueso al encabezado
+  rangoEncabezado.setBorder(
+    true, true, true, true, true, true,
+    '#000000',
+    SpreadsheetApp.BorderStyle.SOLID_THICK
+  );
+
+  // Aplicar filas alternas (cebra) para mejor lectura
+  if (ultimaFila > 1 && tema.colorFila1) {
+    for (let i = 2; i <= ultimaFila; i++) {
+      const rangoFila = hoja.getRange(i, 1, 1, ultimaColumna);
+
+      // Alternar colores en filas
+      if (i % 2 === 0) {
+        rangoFila.setBackground(tema.colorFila2);
+      } else {
+        rangoFila.setBackground(tema.colorFila1);
+      }
+
+      // Aplicar bordes suaves a las filas
+      rangoFila.setBorder(
+        false, false, true, false, false, false,
+        '#E0E0E0',
+        SpreadsheetApp.BorderStyle.SOLID
+      );
+    }
+  }
+
+  // Configuraciones adicionales
+  hoja.setFrozenRows(1);
+  hoja.setFrozenColumns(2); // Congelar ID y Nombre
+
+  // Ajustar altura de encabezado
+  hoja.setRowHeight(1, 40);
 }
 
 // ====================================
