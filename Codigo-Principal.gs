@@ -196,22 +196,12 @@ function instalarTodoAutomatico() {
     // ============================================
     ui.alert(`📋 PASO ${pasoActual}/${pasos}`, 'Limpiando y organizando...', ui.ButtonSet.OK);
 
-    // Limpiar filas vacías
-    hojasConfig.forEach(function(nombreHoja) {
-      const hoja = ss.getSheetByName(nombreHoja);
-      if (!hoja) return;
-
-      const ultimaFila = hoja.getLastRow();
-      if (ultimaFila <= 1) return;
-
-      for (let i = ultimaFila; i >= 2; i--) {
-        const fila = hoja.getRange(i, 1, 1, 4).getValues()[0];
-        const estaVacia = fila.every(function(celda) { return !celda || celda === ''; });
-        if (estaVacia) {
-          hoja.deleteRow(i);
-        }
-      }
-    });
+    // Aplicar colores y formato (SIN eliminar filas)
+    try {
+      aplicarColorFormacionCorregido();
+    } catch (e) {
+      console.log('No se pudo aplicar colores:', e);
+    }
 
     pasoActual++;
 
@@ -2736,9 +2726,16 @@ function limpiarDatosVacios() {
       for (let fila = ultimaFila; fila >= 2; fila--) {
         const nombre = hoja.getRange(fila, COLUMNAS.NOMBRE).getValue();
 
+        // Solo eliminar si nombre está vacío Y no hay otros datos en la fila
         if (!nombre || nombre.toString().trim() === '' || nombre.toString().trim().length < 2) {
-          hoja.deleteRow(fila);
-          total++;
+          const numColumnas = hoja.getLastColumn();
+          const todasColumnas = hoja.getRange(fila, 1, 1, numColumnas).getValues()[0];
+          const todasVacias = todasColumnas.every(function(celda) { return !celda || celda === ''; });
+
+          if (todasVacias) {
+            hoja.deleteRow(fila);
+            total++;
+          }
         }
       }
     });
@@ -3932,9 +3929,10 @@ function limpiarYOrganizarTodo() {
       const ultimaFila = hoja.getLastRow();
       if (ultimaFila <= 1) return;
 
-      // Eliminar de abajo hacia arriba
+      // Eliminar de abajo hacia arriba (revisando TODAS las columnas)
       for (let i = ultimaFila; i >= 2; i--) {
-        const fila = hoja.getRange(i, 1, 1, 4).getValues()[0];
+        const numColumnas = hoja.getLastColumn();
+        const fila = hoja.getRange(i, 1, 1, numColumnas).getValues()[0];
         const estaVacia = fila.every(function(celda) { return !celda || celda === ''; });
 
         if (estaVacia) {
